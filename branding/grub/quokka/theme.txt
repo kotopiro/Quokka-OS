@@ -1,0 +1,73 @@
+# Quokka OS — GRUB2 theme
+# Palette: bg #000410, cyan #00CFFE, dim #0088AF, text #E8FBFF
+
+title-text: ""
+desktop-image: "background.png"
+desktop-color: "#000410"
+terminal-font: "Terminal Regular 16"
+
+# Top logo
++ image {
+    id = "logo"
+    file = "logo.png"
+    left = 50%-64
+    top = 8%
+    width = 128
+    height = 128
+}
+
++ label {
+    id = "title"
+    text = "QUOKKA OS"
+    color = "#00CFFE"
+    align = "center"
+    top = 21%
+    font = "Terminal Bold 22"
+}
+
++ boot_menu {
+    left = 15%
+    top = 32%
+    width = 70%
+    height = 45%
+    item_height = 36
+    item_padding = 10
+    item_spacing = 4
+
+    item_color = "#5C7A8A"
+    selected_item_color = "#00CFFE"
+
+    item_font = "Terminal Regular 14"
+    selected_item_font = "Terminal Bold 14"
+
+    icon_width = 0
+    icon_height = 0
+
+    item_pixmap_style = "menu_item_*.png"
+    selected_item_pixmap_style = "menu_item_selected_*.png"
+
+    scrollbar = false
+}
+
++ progress_bar {
+    id = "__timeout__"
+    left = 15%
+    top = 82%
+    width = 70%
+    height = 18
+    font = "Terminal Regular 12"
+    text_color = "#5C7A8A"
+    fg_color = "#00CFFE"
+    bg_color = "#0A0F1E"
+    border_color = "#0088AF"
+    text = "@TIMEOUT_NOTIFICATION_LONG@"
+}
+
++ label {
+    id = "footer"
+    text = "e: edit    c: command line    ENTER: boot"
+    color = "#5C7A8A"
+    align = "center"
+    top = 93%
+    font = "Terminal Regular 11"
+}

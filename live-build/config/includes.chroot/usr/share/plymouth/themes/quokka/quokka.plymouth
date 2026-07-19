@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Quokka OS
+Description=Quokka OS boot splash - cyan circuit quokka on near-black navy
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/quokka
+ScriptFile=/usr/share/plymouth/themes/quokka/quokka.script

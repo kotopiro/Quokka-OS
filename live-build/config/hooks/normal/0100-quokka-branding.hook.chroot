@@ -1,0 +1,27 @@
+#!/bin/sh
+# Quokka OS — ブランディング適用フック (live-build の chroot 内で実行される)
+set -e
+
+# Plymouthテーマを既定に設定
+# -R フラグが update-initramfs -u も内部で実行してくれるので別途呼ぶ必要はない
+if command -v plymouth-set-default-theme >/dev/null 2>&1; then
+    plymouth-set-default-theme -R quokka || true
+fi
+
+# GRUBテーマを既定に設定
+if [ -f /etc/default/grub ]; then
+    if ! grep -q "^GRUB_THEME=" /etc/default/grub; then
+        echo 'GRUB_THEME="/boot/grub/themes/quokka/theme.txt"' >> /etc/default/grub
+    fi
+    # GRUB_TIMEOUT_STYLE=menu にしないと自作テーマのメニューが一瞬しか出ない
+    sed -i 's/^GRUB_TIMEOUT_STYLE=.*/GRUB_TIMEOUT_STYLE=menu/' /etc/default/grub 2>/dev/null || \
+        echo 'GRUB_TIMEOUT_STYLE=menu' >> /etc/default/grub
+    # GRUB_THEME/TIMEOUT_STYLEの変更をgrub.cfgに反映
+    update-grub || true
+fi
+
+# デスクトップ壁紙をデフォルトに(XFCE想定。DE確定後に見直し)
+mkdir -p /etc/skel/.config
+echo "quokka-wallpaper: /usr/share/backgrounds/quokka/quokka-wallpaper-1920x1080.png" > /etc/skel/.config/quokka-wallpaper.conf
+
+echo "[quokka] branding hook applied"

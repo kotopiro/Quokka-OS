@@ -1,0 +1,18 @@
+# Quokka OS — 基本パッケージリスト (Milestone 2: 最小起動確認用)
+# 本格的なpentestツール群はMilestone 3で quokka-tools-* メタパッケージとして分離する。
+# ここではブランディング(Plymouth/GRUB)が実機で動くことを確認するための最小構成のみ。
+
+task-xfce-desktop
+lightdm
+lightdm-gtk-greeter
+plymouth
+plymouth-themes
+live-boot
+live-config
+live-config-systemd
+grub-common
+grub-pc-bin
+grub-efi-amd64-bin
+network-manager
+firmware-linux-free
+sudo

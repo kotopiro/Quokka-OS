@@ -1,0 +1,6 @@
+
+  Quokka OS — Penetration Testing Distribution
+
+  Base: Debian (bookworm) + Kali tools overlay
+  Docs: /usr/share/doc/quokka-os (TODO: not yet packaged)
+

@@ -1,0 +1,82 @@
+// Quokka OS — Plymouth boot splash
+// Palette: bg #000410, cyan #00CFFE, cyan-glow #7BEFFF
+
+Window.SetBackgroundTopColor(0.0, 0.015, 0.06);
+Window.SetBackgroundBottomColor(0.0, 0.015, 0.06);
+
+logo.image = Image("logo.png");
+logo.sprite = Sprite(logo.image);
+
+screen_w = Window.GetWidth();
+screen_h = Window.GetHeight();
+
+logo_w = logo.image.GetWidth();
+logo_h = logo.image.GetHeight();
+
+logo.x = screen_w / 2 - logo_w / 2;
+logo.y = screen_h / 2 - logo_h / 2 - 40;
+logo.sprite.SetPosition(logo.x, logo.y, 10);
+
+// --- Progress bar (drawn procedurally, no image asset needed) ---
+bar_width  = 300;
+bar_height = 3;
+bar_x = screen_w / 2 - bar_width / 2;
+bar_y = logo.y + logo_h + 60;
+
+bar_track.image = Image.Text("", 0, 0, 0, 0); // placeholder unused
+track_image = Image(bar_width, bar_height);
+track_image.Fill(0, 0.05, 0.09, 1);           // dim navy track
+track.sprite = Sprite(track_image);
+track.sprite.SetPosition(bar_x, bar_y, 9);
+
+fun draw_progress(percent)
+{
+    global.fill_width = Math.Int(bar_width * percent);
+    if (fill_width < 2) fill_width = 2;
+
+    fill_image = Image(fill_width, bar_height);
+    fill_image.Fill(0, 0.812, 0.996, 1);      // #00CFFE
+    global.fill_sprite = Sprite(fill_image);
+    fill_sprite.SetPosition(bar_x, bar_y, 11);
+}
+
+// --- Label ---
+label.image = Image.Text("QUOKKA OS", 0.486, 0.937, 1.0, 1, "Sans 11");
+label.sprite = Sprite(label.image);
+label.sprite.SetPosition(screen_w / 2 - label.image.GetWidth() / 2, bar_y + 20, 10);
+
+// --- Boot progress callback ---
+global.progress = 0;
+fun refresh_callback()
+{
+    global.progress++;
+    if (progress > 100) progress = 100;
+    if (global.fill_sprite)
+        global.fill_sprite.SetOpacity(0); // clear previous frame's fill sprite reference
+    draw_progress(progress / 100);
+}
+Plymouth.SetRefreshFunction(refresh_callback);
+
+fun boot_progress_callback(duration, progress_val)
+{
+    draw_progress(progress_val);
+}
+Plymouth.SetBootProgressFunction(boot_progress_callback);
+
+// --- Password / LUKS prompt (kept minimal, on-brand) ---
+fun display_password_callback(prompt, bullets)
+{
+    prompt_image = Image.Text(prompt, 0.906, 0.984, 1.0, 1, "Sans 12");
+    prompt_sprite = Sprite(prompt_image);
+    prompt_sprite.SetPosition(screen_w / 2 - prompt_image.GetWidth() / 2, bar_y + 60, 10);
+}
+Plymouth.SetDisplayPasswordFunction(display_password_callback);
+
+// --- Quit / transition ---
+fun quit_callback()
+{
+    logo.sprite.SetOpacity(0);
+    track.sprite.SetOpacity(0);
+    label.sprite.SetOpacity(0);
+}
+Plymouth.SetQuitFunction(quit_callback);
