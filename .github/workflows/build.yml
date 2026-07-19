@@ -5,9 +5,6 @@ on:
     branches:
       - main
       - master
-    paths:
-      - "live-build/**"
-      - ".github/workflows/build.yml"
   workflow_dispatch:
 
 permissions:
@@ -15,91 +12,90 @@ permissions:
 
 jobs:
   build-iso:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 180
+    runs-on: ubuntu-latest
+
+    container:
+      image: debian:12
+
+    timeout-minutes: 240
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Free disk space
+      - name: Install packages
         run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache || true
-          df -h
+          apt-get update
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
+          DEBIAN_FRONTEND=noninteractive apt-get install -y \
             live-build \
             debootstrap \
-            squashfs-tools \
-            xorriso \
-            isolinux \
-            syslinux-common \
-            grub-pc-bin \
-            grub-efi-amd64-bin \
-            grub-efi-amd64-signed \
-            shim-signed \
-            mtools \
-            dosfstools \
+            debian-archive-keyring \
             wget \
             curl \
             ca-certificates \
-            gnupg
+            gnupg \
+            xorriso \
+            squashfs-tools \
+            grub-pc-bin \
+            grub-efi-amd64-bin \
+            grub-efi-ia32-bin \
+            grub-common \
+            isolinux \
+            syslinux-common \
+            dosfstools \
+            mtools
 
-      - name: Fetch Kali archive key
+      - name: Download Kali key
         run: |
           mkdir -p live-build/config/archives
-          if [ ! -s live-build/config/archives/kali.key.chroot ]; then
+
+          if [ ! -f live-build/config/archives/kali.key.chroot ]; then
             wget https://archive.kali.org/archive-key.asc \
               -O live-build/config/archives/kali.key.chroot
           fi
 
-      - name: Show repository
-        run: |
-          pwd
-          ls -R live-build
-
-      - name: Clean previous build
+      - name: Clean
         working-directory: live-build
         run: |
-          sudo lb clean --purge || true
-          sudo rm -rf cache .build chroot binary local
+          lb clean --purge || true
+          rm -rf cache .build chroot binary local
 
-      - name: Configure live-build
+      - name: Configure
         working-directory: live-build
         run: |
           chmod +x auto/config
-          sudo ./auto/config
-          echo "===== auto/config ====="
-          cat auto/config
+          ./auto/config
 
-      - name: Build ISO
+      - name: Show config
         working-directory: live-build
         run: |
-          sudo lb build 2>&1 | tee build.log
+          lb config --dump || true
 
-      - name: Show build output
+      - name: Build
+        working-directory: live-build
+        run: |
+          lb build 2>&1 | tee build.log
+
+      - name: Show files
         if: always()
         working-directory: live-build
         run: |
-          echo "===== Files ====="
+          pwd
           ls -lah
-          echo
-          echo "===== Search ISO ====="
-          find . -type f \( -name "*.iso" -o -name "*.img" \)
+          find . -type f
 
-      - name: Generate SHA256
+      - name: Create checksum
         if: success()
         working-directory: live-build
         shell: bash
         run: |
           shopt -s nullglob
+
           files=( *.iso *.hybrid.iso )
 
           if [ ${#files[@]} -eq 0 ]; then
-            echo "ERROR: ISO not found."
+            echo "ISO not found"
             exit 1
           fi
 
@@ -111,19 +107,14 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: quokka-os-iso
+          name: QuokkaOS-ISO
           path: |
             live-build/*.iso
             live-build/*.sha256
-          if-no-files-found: error
-          retention-days: 14
 
-      - name: Upload build log
+      - name: Upload Logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: quokka-os-build-log
-          path: |
-            live-build/build.log
-          if-no-files-found: ignore
-          retention-days: 14
+          name: build-log
+          path: live-build/build.log
