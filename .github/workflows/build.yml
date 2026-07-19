@@ -22,9 +22,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Free up disk space (live-build needs a lot)
+      - name: Free disk space
         run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache || true
           df -h
 
       - name: Install dependencies
@@ -44,10 +44,11 @@ jobs:
             mtools \
             dosfstools \
             wget \
+            curl \
             ca-certificates \
             gnupg
 
-      - name: Fetch Kali archive key (if not already committed)
+      - name: Fetch Kali archive key
         run: |
           mkdir -p live-build/config/archives
           if [ ! -s live-build/config/archives/kali.key.chroot ]; then
@@ -55,25 +56,55 @@ jobs:
               -O live-build/config/archives/kali.key.chroot
           fi
 
-      - name: lb clean
-        working-directory: live-build
-        run: sudo lb clean
+      - name: Show repository
+        run: |
+          pwd
+          ls -R live-build
 
-      - name: lb build
+      - name: Clean previous build
         working-directory: live-build
-        run: sudo lb build 2>&1 | tee build.log
+        run: |
+          sudo lb clean --purge || true
+          sudo rm -rf cache .build chroot binary local
+
+      - name: Configure live-build
+        working-directory: live-build
+        run: |
+          chmod +x auto/config
+          sudo ./auto/config
+          echo "===== auto/config ====="
+          cat auto/config
+
+      - name: Build ISO
+        working-directory: live-build
+        run: |
+          sudo lb build 2>&1 | tee build.log
 
       - name: Show build output
         if: always()
         working-directory: live-build
-        run: ls -lah
+        run: |
+          echo "===== Files ====="
+          ls -lah
+          echo
+          echo "===== Search ISO ====="
+          find . -type f \( -name "*.iso" -o -name "*.img" \)
 
-      - name: Generate checksum
+      - name: Generate SHA256
         if: success()
         working-directory: live-build
+        shell: bash
         run: |
-          for f in live-image-*.iso *.hybrid.iso; do
-            [ -f "$f" ] && sha256sum "$f" | tee "$f.sha256"
+          shopt -s nullglob
+          files=( *.iso *.hybrid.iso )
+
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "ERROR: ISO not found."
+            exit 1
+          fi
+
+          for f in "${files[@]}"; do
+            sha256sum "$f" > "$f.sha256"
           done
 
       - name: Upload ISO
@@ -87,11 +118,12 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: Upload build log (always, for debugging failures)
+      - name: Upload build log
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: quokka-os-build-log
-          path: live-build/build.log
+          path: |
+            live-build/build.log
           if-no-files-found: ignore
           retention-days: 14
