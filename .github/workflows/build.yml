@@ -1,0 +1,97 @@
+name: Build Quokka OS ISO
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - "live-build/**"
+      - ".github/workflows/build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Free up disk space (live-build needs a lot)
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
+          df -h
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            live-build \
+            debootstrap \
+            squashfs-tools \
+            xorriso \
+            isolinux \
+            syslinux-common \
+            grub-pc-bin \
+            grub-efi-amd64-bin \
+            grub-efi-amd64-signed \
+            shim-signed \
+            mtools \
+            dosfstools \
+            wget \
+            ca-certificates \
+            gnupg
+
+      - name: Fetch Kali archive key (if not already committed)
+        run: |
+          mkdir -p live-build/config/archives
+          if [ ! -s live-build/config/archives/kali.key.chroot ]; then
+            wget https://archive.kali.org/archive-key.asc \
+              -O live-build/config/archives/kali.key.chroot
+          fi
+
+      - name: lb clean
+        working-directory: live-build
+        run: sudo lb clean
+
+      - name: lb build
+        working-directory: live-build
+        run: sudo lb build 2>&1 | tee build.log
+
+      - name: Show build output
+        if: always()
+        working-directory: live-build
+        run: ls -lah
+
+      - name: Generate checksum
+        if: success()
+        working-directory: live-build
+        run: |
+          for f in live-image-*.iso *.hybrid.iso; do
+            [ -f "$f" ] && sha256sum "$f" | tee "$f.sha256"
+          done
+
+      - name: Upload ISO
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quokka-os-iso
+          path: |
+            live-build/*.iso
+            live-build/*.sha256
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload build log (always, for debugging failures)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quokka-os-build-log
+          path: live-build/build.log
+          if-no-files-found: ignore
+          retention-days: 14
