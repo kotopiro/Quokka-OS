@@ -59,11 +59,10 @@ jobs:
             ca-certificates \
             gnupg
 
-      # 【修正1】鍵をバイナリ形式に変換 (dearmor)
-      # これをやらないと APT が "unsupported filetype" と言って鍵を無視します
       - name: Fetch Kali archive key
         run: |
           mkdir -p live-build/config/archives
+          # 鍵をバイナリ形式に変換。これで "unsupported filetype" エラーを確実に防ぎます。
           wget -qO - https://archive.kali.org/archive-key.asc | gpg --dearmor | sudo tee live-build/config/archives/kali.key.chroot > /dev/null
 
       - name: Show selected profile
@@ -73,26 +72,29 @@ jobs:
         working-directory: live-build
         run: sudo lb clean --purge
 
-      # 【修正2】lb config を明示的に呼び出し、Ubuntu ミラーの混入を阻止する
-      # --parent-mirror-security を Debian のものに固定するのが肝です
       - name: Configure live-build
         working-directory: live-build
         run: |
           chmod +x auto/config
+          # Ubuntu上でDebianを作るための「鬼の固定設定」
+          # --mode debian: Ubuntuのミラー設定が混ざるのを根本から防ぐ
+          # --mirror-security: Ubuntu 22.04のlbが認識する正しいオプション名
           sudo lb config \
+            --mode debian \
             --mirror-bootstrap "http://deb.debian.org/debian/" \
             --mirror-chroot "http://deb.debian.org/debian/" \
-            --parent-mirror-bootstrap "http://deb.debian.org/debian/" \
-            --parent-mirror-chroot "http://deb.debian.org/debian/" \
-            --parent-mirror-security "http://security.debian.org/debian-security" \
+            --mirror-binary "http://deb.debian.org/debian/" \
+            --mirror-security "http://security.debian.org/debian-security" \
             --security true
+          
+          # auto/configが存在する場合、その中の設定も反映させる
           ./auto/config
 
-      # 【修正3】lb build を sudo で実行（環境変数を維持）
       - name: Build ISO
         working-directory: live-build
         run: |
           set -o pipefail
+          # ビルド本体の実行
           sudo --preserve-env=QUOKKA_PROFILE lb build 2>&1 | tee build.log
 
       - name: Show build output
