@@ -78,18 +78,16 @@ jobs:
         run: |
           chmod +x auto/config
           
-          # 【重要】オプション名がバージョンに依存するのを防ぐため、環境変数をセットします
-          # これにより Ubuntu 22.04 の lb config が Ubuntu ミラーを見に行く挙動を強制停止させます
+          # 環境変数をセット（末尾にスラッシュを追加）
           export LB_MODE="debian"
-          export LB_PARENT_MIRROR_CHROOT_SECURITY="http://security.debian.org/debian-security"
-          export LB_PARENT_MIRROR_BINARY_SECURITY="http://security.debian.org/debian-security"
-          export LB_MIRROR_CHROOT_SECURITY="http://security.debian.org/debian-security"
-          export LB_MIRROR_BINARY_SECURITY="http://security.debian.org/debian-security"
+          export LB_PARENT_MIRROR_CHROOT_SECURITY="http://debian.org"
+          export LB_PARENT_MIRROR_BINARY_SECURITY="http://debian.org"
+          export LB_MIRROR_CHROOT_SECURITY="http://debian.org"
+          export LB_MIRROR_BINARY_SECURITY="http://debian.org"
           
-          # 設定の実行。オプションエラーを避けるため最小限のフラグで実行します
-          sudo -E lb config --mode debian --security true
+          # 【最重要】--security-distribution bookworm-security を追加します
+          sudo -E lb config --mode debian --security true --security-distribution bookworm-security
           
-          # ユーザー独自の auto/config を管理者権限で実行
           sudo -E ./auto/config
 
 
