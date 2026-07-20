@@ -23,7 +23,6 @@ permissions:
   contents: read
 
 env:
-  # pushイベント等でもデフォルト値が入るように修正
   QUOKKA_PROFILE: ${{ inputs.profile || 'standard' }}
 
 jobs:
@@ -64,7 +63,7 @@ jobs:
         run: |
           mkdir -p live-build/config/archives
           if [ ! -s live-build/config/archives/kali.key.chroot ]; then
-            wget https://archive.kali.org/archive-key.asc \
+            wget https://kali.org \
               -O live-build/config/archives/kali.key.chroot
           fi
 
@@ -94,20 +93,22 @@ jobs:
           done
 
       - name: Import GPG key
-        if: success() && secrets.QUOKKA_GPG_PRIVATE_KEY != ''
+        # if文ではenv経由でチェックするように修正
+        if: success() && env.QUOKKA_GPG_PRIVATE_KEY != ''
         env:
           QUOKKA_GPG_PRIVATE_KEY: ${{ secrets.QUOKKA_GPG_PRIVATE_KEY }}
         run: |
-          # ログへの漏洩防止措置を追加
           set +x
           echo "$QUOKKA_GPG_PRIVATE_KEY" | base64 -d > /tmp/quokka-private.key
           gpg --batch --import /tmp/quokka-private.key
           rm -f /tmp/quokka-private.key
 
       - name: Sign checksums (skip automatically when secrets are absent)
-        if: success() && secrets.QUOKKA_GPG_PRIVATE_KEY != '' && secrets.QUOKKA_GPG_KEY_ID != ''
+        # if文ではenv経由でチェックするように修正
+        if: success() && env.QUOKKA_GPG_PRIVATE_KEY != '' && env.QUOKKA_GPG_KEY_ID != ''
         working-directory: live-build
         env:
+          QUOKKA_GPG_PRIVATE_KEY: ${{ secrets.QUOKKA_GPG_PRIVATE_KEY }}
           QUOKKA_GPG_KEY_ID: ${{ secrets.QUOKKA_GPG_KEY_ID }}
           QUOKKA_GPG_PASSPHRASE: ${{ secrets.QUOKKA_GPG_PASSPHRASE }}
         run: |
