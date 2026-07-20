@@ -75,7 +75,7 @@ jobs:
 
       - name: lb clean
         working-directory: live-build
-        run: sudo lb clean
+        run: sudo lb clean --purge
 
       - name: lb build
         working-directory: live-build
