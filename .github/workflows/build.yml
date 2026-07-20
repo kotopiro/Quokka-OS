@@ -8,7 +8,6 @@ on:
     paths:
       - "live-build/**"
       - ".github/workflows/build.yml"
-
   workflow_dispatch:
     inputs:
       profile:
@@ -60,14 +59,12 @@ jobs:
             ca-certificates \
             gnupg
 
-      # Debianなら不要。Kaliベースなら残す
+      # 【修正1】鍵をバイナリ形式に変換 (dearmor)
+      # これをやらないと APT が "unsupported filetype" と言って鍵を無視します
       - name: Fetch Kali archive key
         run: |
           mkdir -p live-build/config/archives
-          if [ ! -s live-build/config/archives/kali.key.chroot ]; then
-            wget https://archive.kali.org/archive-key.asc \
-              -O live-build/config/archives/kali.key.chroot
-          fi
+          wget -qO - https://archive.kali.org/archive-key.asc | gpg --dearmor | sudo tee live-build/config/archives/kali.key.chroot > /dev/null
 
       - name: Show selected profile
         run: echo "QUOKKA_PROFILE=${QUOKKA_PROFILE}"
@@ -76,14 +73,22 @@ jobs:
         working-directory: live-build
         run: sudo lb clean --purge
 
-      # ★重要★
-      # auto/config を実行して bookworm の設定を反映
+      # 【修正2】lb config を明示的に呼び出し、Ubuntu ミラーの混入を阻止する
+      # --parent-mirror-security を Debian のものに固定するのが肝です
       - name: Configure live-build
         working-directory: live-build
         run: |
           chmod +x auto/config
+          sudo lb config \
+            --mirror-bootstrap "http://deb.debian.org/debian/" \
+            --mirror-chroot "http://deb.debian.org/debian/" \
+            --parent-mirror-bootstrap "http://deb.debian.org/debian/" \
+            --parent-mirror-chroot "http://deb.debian.org/debian/" \
+            --parent-mirror-security "http://security.debian.org/debian-security" \
+            --security true
           ./auto/config
 
+      # 【修正3】lb build を sudo で実行（環境変数を維持）
       - name: Build ISO
         working-directory: live-build
         run: |
@@ -114,7 +119,6 @@ jobs:
             echo "No GPG key configured."
             exit 0
           fi
-
           echo "$QUOKKA_GPG_PRIVATE_KEY" | base64 -d > /tmp/quokka.key
           gpg --batch --import /tmp/quokka.key
           rm -f /tmp/quokka.key
@@ -131,24 +135,12 @@ jobs:
             echo "Skipping signing."
             exit 0
           fi
-
           shopt -s nullglob
-
           for checksum in *.sha256; do
             if [ -n "${QUOKKA_GPG_PASSPHRASE:-}" ]; then
-              gpg --batch \
-                  --yes \
-                  --pinentry-mode loopback \
-                  --passphrase "$QUOKKA_GPG_PASSPHRASE" \
-                  --local-user "$QUOKKA_GPG_KEY_ID" \
-                  --armor \
-                  --detach-sign "$checksum"
+              gpg --batch --yes --pinentry-mode loopback --passphrase "$QUOKKA_GPG_PASSPHRASE" --local-user "$QUOKKA_GPG_KEY_ID" --armor --detach-sign "$checksum"
             else
-              gpg --batch \
-                  --yes \
-                  --local-user "$QUOKKA_GPG_KEY_ID" \
-                  --armor \
-                  --detach-sign "$checksum"
+              gpg --batch --yes --local-user "$QUOKKA_GPG_KEY_ID" --armor --detach-sign "$checksum"
             fi
           done
 
