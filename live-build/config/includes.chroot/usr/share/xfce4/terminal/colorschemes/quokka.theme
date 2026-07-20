@@ -1,0 +1,13 @@
+[Scheme]
+Name=Quokka OS
+ColorForeground=#E8FBFF
+ColorBackground=#000410
+ColorCursor=#00CFFE
+ColorCursorForeground=#000410
+ColorBold=#7BEFFF
+ColorBoldIsBright=FALSE
+TabActivityColor=#39FF88
+ColorSelection=#00CFFE
+ColorSelectionUseDefault=FALSE
+ColorSelectionBackground=#0A0F1E
+ColorPalette=#0A0F1E;#FF3B5C;#39FF88;#FFB020;#0088AF;#0088AF;#00CFFE;#E8FBFF;#5C7A8A;#FF6B85;#7BFFAE;#FFCB6B;#00CFFE;#7BEFFF;#7BEFFF;#FFFFFF

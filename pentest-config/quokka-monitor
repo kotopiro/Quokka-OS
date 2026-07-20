@@ -1,0 +1,92 @@
+#!/bin/sh
+set -eu
+
+usage() {
+    cat <<USAGE
+Usage:
+  quokka-monitor list
+  quokka-monitor start <wlan-iface> [monitor-iface]
+  quokka-monitor stop <monitor-iface>
+  quokka-monitor status
+USAGE
+}
+
+require_root() {
+    if [ "$(id -u)" -ne 0 ]; then
+        echo "This command must be run as root." >&2
+        exit 1
+    fi
+}
+
+list_ifaces() {
+    iw dev | awk '$1 == "Interface" { print $2 }'
+}
+
+get_phy() {
+    iface="$1"
+    iw dev "$iface" info | awk '/wiphy/ { print "phy"$2; exit }'
+}
+
+start_monitor() {
+    iface="$1"
+    mon_if="${2:-${iface}mon}"
+    phy="$(get_phy "$iface")"
+
+    if [ -z "$phy" ]; then
+        echo "Could not determine phy for $iface" >&2
+        exit 1
+    fi
+
+    if ip link show "$mon_if" >/dev/null 2>&1; then
+        echo "$mon_if already exists." >&2
+        exit 1
+    fi
+
+    nmcli dev set "$iface" managed no >/dev/null 2>&1 || true
+    ip link set "$iface" down || true
+    iw phy "$phy" interface add "$mon_if" type monitor
+    ip link set "$mon_if" up
+    nmcli dev set "$mon_if" managed no >/dev/null 2>&1 || true
+
+    echo "Created monitor interface: $mon_if (parent: $iface, phy: $phy)"
+}
+
+stop_monitor() {
+    mon_if="$1"
+    if ! ip link show "$mon_if" >/dev/null 2>&1; then
+        echo "$mon_if does not exist." >&2
+        exit 1
+    fi
+
+    ip link set "$mon_if" down || true
+    iw dev "$mon_if" del
+    echo "Removed monitor interface: $mon_if"
+}
+
+status_monitor() {
+    iw dev
+}
+
+cmd="${1:-}"
+case "$cmd" in
+    list)
+        list_ifaces
+        ;;
+    start)
+        require_root
+        [ $# -ge 2 ] || { usage >&2; exit 1; }
+        start_monitor "$2" "${3:-}"
+        ;;
+    stop)
+        require_root
+        [ $# -ge 2 ] || { usage >&2; exit 1; }
+        stop_monitor "$2"
+        ;;
+    status)
+        status_monitor
+        ;;
+    *)
+        usage >&2
+        exit 1
+        ;;
+esac

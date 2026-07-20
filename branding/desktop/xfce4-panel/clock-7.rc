@@ -1,0 +1,8 @@
+DigitalLayout=2
+DigitalTimeFormat=%Y-%m-%d %H:%M UTC
+Mode=2
+ShowDate=true
+ShowFrame=false
+ShowSeconds=false
+TooltipFormat=%A %Y-%m-%d %H:%M UTC
+Timezone=UTC

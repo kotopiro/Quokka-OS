@@ -1,6 +1,5 @@
-# Quokka OS — 基本パッケージリスト (Milestone 2: 最小起動確認用)
-# 本格的なpentestツール群はMilestone 3で quokka-tools-* メタパッケージとして分離する。
-# ここではブランディング(Plymouth/GRUB)が実機で動くことを確認するための最小構成のみ。
+# Quokka OS — 基本パッケージリスト
+# standard / full 共通のベース。full 専用カテゴリは auto/config で有効化する。
 
 task-xfce-desktop
 lightdm
@@ -13,6 +12,18 @@ live-config-systemd
 grub-common
 grub-pc-bin
 grub-efi-amd64-bin
+debian-installer-launcher
 network-manager
+network-manager-openvpn
+openvpn
+nftables
+proxychains4
+wordlists
+iw
+rfkill
 firmware-linux-free
 sudo
+arc-theme
+papirus-icon-theme
+fonts-jetbrains-mono
+xfce4-pulseaudio-plugin

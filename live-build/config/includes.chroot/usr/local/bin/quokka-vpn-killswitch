@@ -1,0 +1,128 @@
+#!/bin/sh
+set -eu
+
+TABLE="quokka_vpn"
+VPN_IF="tun0"
+UPLINK_IF=""
+VPN_ENDPOINT=""
+VPN_PORT="1194"
+VPN_PROTO="udp"
+ALLOW_LAN="false"
+
+usage() {
+    cat <<USAGE
+Usage:
+  quokka-vpn-killswitch enable --uplink <iface> --endpoint <host-or-ip> [--vpn-if tun0] [--port 1194] [--proto udp|tcp] [--allow-lan]
+  quokka-vpn-killswitch disable
+  quokka-vpn-killswitch status
+USAGE
+}
+
+require_root() {
+    if [ "$(id -u)" -ne 0 ]; then
+        echo "This command must be run as root." >&2
+        exit 1
+    fi
+}
+
+resolve_endpoint() {
+    getent ahostsv4 "$1" | awk 'NR==1 {print $1}'
+}
+
+enable_rules() {
+    require_root
+    [ -n "$UPLINK_IF" ] || { echo "--uplink is required" >&2; exit 1; }
+    [ -n "$VPN_ENDPOINT" ] || { echo "--endpoint is required" >&2; exit 1; }
+
+    endpoint_ip="$(resolve_endpoint "$VPN_ENDPOINT")"
+    [ -n "$endpoint_ip" ] || { echo "Could not resolve VPN endpoint: $VPN_ENDPOINT" >&2; exit 1; }
+
+    nft delete table inet "$TABLE" >/dev/null 2>&1 || true
+    nft add table inet "$TABLE"
+    nft 'add chain inet' "$TABLE" input   '{ type filter hook input priority 0; policy drop; }'
+    nft 'add chain inet' "$TABLE" output  '{ type filter hook output priority 0; policy drop; }'
+    nft 'add chain inet' "$TABLE" forward '{ type filter hook forward priority 0; policy drop; }'
+
+    nft add rule inet "$TABLE" input iif lo accept
+    nft add rule inet "$TABLE" output oif lo accept
+    nft add rule inet "$TABLE" input ct state established,related accept
+    nft add rule inet "$TABLE" output ct state established,related accept
+
+    nft add rule inet "$TABLE" input iifname "$VPN_IF" accept
+    nft add rule inet "$TABLE" output oifname "$VPN_IF" accept
+
+    nft add rule inet "$TABLE" output oifname "$UPLINK_IF" ip daddr "$endpoint_ip" "$VPN_PROTO" dport "$VPN_PORT" accept
+
+    nft add rule inet "$TABLE" output oifname "$UPLINK_IF" udp sport 68 udp dport 67 accept
+    nft add rule inet "$TABLE" input  iifname "$UPLINK_IF" udp sport 67 udp dport 68 accept
+
+    if [ "$ALLOW_LAN" = "true" ]; then
+        nft add rule inet "$TABLE" output ip daddr 10.0.0.0/8 accept
+        nft add rule inet "$TABLE" output ip daddr 172.16.0.0/12 accept
+        nft add rule inet "$TABLE" output ip daddr 192.168.0.0/16 accept
+        nft add rule inet "$TABLE" input  ip saddr 10.0.0.0/8 accept
+        nft add rule inet "$TABLE" input  ip saddr 172.16.0.0/12 accept
+        nft add rule inet "$TABLE" input  ip saddr 192.168.0.0/16 accept
+    fi
+
+    echo "Enabled VPN kill switch: vpn_if=$VPN_IF uplink=$UPLINK_IF endpoint=$endpoint_ip:$VPN_PORT/$VPN_PROTO allow_lan=$ALLOW_LAN"
+}
+
+status_rules() {
+    nft list table inet "$TABLE"
+}
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        enable|disable|status)
+            ACTION="$1"
+            shift
+            ;;
+        --vpn-if)
+            VPN_IF="$2"
+            shift 2
+            ;;
+        --uplink)
+            UPLINK_IF="$2"
+            shift 2
+            ;;
+        --endpoint)
+            VPN_ENDPOINT="$2"
+            shift 2
+            ;;
+        --port)
+            VPN_PORT="$2"
+            shift 2
+            ;;
+        --proto)
+            VPN_PROTO="$2"
+            shift 2
+            ;;
+        --allow-lan)
+            ALLOW_LAN="true"
+            shift
+            ;;
+        *)
+            usage >&2
+            exit 1
+            ;;
+    esac
+ done
+
+case "${ACTION:-}" in
+    enable)
+        enable_rules
+        ;;
+    disable)
+        require_root
+        nft delete table inet "$TABLE" >/dev/null 2>&1 || true
+        echo "Disabled VPN kill switch"
+        ;;
+    status)
+        status_rules
+        ;;
+    *)
+        usage >&2
+        exit 1
+        ;;
+esac

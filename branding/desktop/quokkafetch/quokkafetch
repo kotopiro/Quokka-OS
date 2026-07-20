@@ -1,0 +1,64 @@
+#!/bin/bash
+# Quokka OS — quokkafetch
+# Minimal, dependency-free system-info banner (no neofetch/screenfetch
+# required). Colors come straight from branding/palette/palette.md so
+# this stays in sync with the rest of the brand without extra tooling.
+
+# --- palette (truecolor escapes) ---
+C_CYAN=$'\e[38;2;0;207;254m'    # --quokka-cyan
+C_GLOW=$'\e[38;2;123;239;255m'  # --quokka-cyan-glow
+C_DIM=$'\e[38;2;0;136;175m'     # --quokka-cyan-dim
+C_TEXT=$'\e[38;2;232;251;255m'  # --quokka-text
+C_MUTED=$'\e[38;2;92;122;138m'  # --quokka-text-muted
+BOLD=$'\e[1m'
+RESET=$'\e[0m'
+
+# --- system info ---
+os_name="$( . /etc/os-release 2>/dev/null; echo "${PRETTY_NAME:-Quokka OS}" )"
+kernel="$(uname -sr)"
+uptime_str="$(uptime -p 2>/dev/null | sed 's/^up //')"
+shell_name="${SHELL##*/}"
+de_name="${XDG_CURRENT_DESKTOP:-XFCE}"
+term_name="${TERM:-unknown}"
+cpu_model="$(awk -F': ' '/model name/{print $2; exit}' /proc/cpuinfo 2>/dev/null)"
+mem_str="$(free -h 2>/dev/null | awk '/^Mem:/{print $3 " / " $2}')"
+ip_addr="$(hostname -I 2>/dev/null | awk '{print $1}')"
+[ -z "$ip_addr" ] && ip_addr="offline"
+pkg_count="$(dpkg-query -f '.\n' -W 2>/dev/null | wc -l)"
+
+info_line() { printf "%s%-10s%s %s\n" "$C_CYAN$BOLD" "$1" "$RESET" "$2$C_TEXT"; }
+
+# --- ascii art (padded to a fixed width so color codes line up cleanly) ---
+art=(
+"     .-\"\"-.     .-\"\"-."
+"     :      \`\`\`\`\`      :"
+"    /    (=)     (=)    \\"
+"   |                      |"
+"   |        \\____/        |"
+"    \\                    /"
+"     \`.                ,'"
+"       \`--..______..--'"
+)
+
+echo
+for i in "${!art[@]}"; do
+    line="${art[$i]}"
+    case $i in
+        0) printf "  %s%s%s\n" "$C_GLOW" "$line" "$RESET" ;;
+        *) printf "  %s%s%s\n" "$C_CYAN" "$line" "$RESET" ;;
+    esac
+done
+echo
+printf "  %s%sQUOKKA OS%s %s— Smile . Scan . Secure%s\n" "$BOLD" "$C_CYAN" "$RESET" "$C_MUTED" "$RESET"
+echo "  ${C_MUTED}────────────────────────────────────${RESET}"
+info_line "OS"       "$os_name"
+info_line "Kernel"   "$kernel"
+info_line "Uptime"   "${uptime_str:-just booted}"
+info_line "Shell"    "$shell_name"
+info_line "DE"       "$de_name"
+info_line "Terminal" "$term_name"
+info_line "CPU"      "${cpu_model:-unknown}"
+info_line "Memory"   "${mem_str:-unknown}"
+info_line "IP"       "$ip_addr"
+info_line "Packages" "${pkg_count:-unknown}"
+echo

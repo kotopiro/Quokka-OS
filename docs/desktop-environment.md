@@ -13,12 +13,27 @@
 
 ## 適用方針
 
-- `package-lists/quokka.list.chroot` で `task-xfce-desktop` を導入(設定済み)
-- パネルレイアウト・アイコンテーマは別途 `branding/desktop/` で定義予定(未着手)
-- ログイン画面(LightDM想定)のテーマも `branding/palette/palette.md` のカラーに合わせる(未着手)
-- GTKテーマは `branding/palette/palette.md` のCSS変数を `gtk.css` に落とし込む形で実装予定(未着手)
+- `package-lists/quokka.list.chroot` で `task-xfce-desktop` を導入
+- GTKテーマは `Quokka-Dark` を維持
+- xfwm4 のウィンドウ枠は自作せず **Arc-Dark** を採用
+- 既定パネルは **上部シングルパネル** にする
 
-## 未決定事項
+## Milestone 4 実装内容 (`branding/desktop/`)
 
-- ログインマネージャはLightDM(Kali/Parrot標準)を踏襲する想定だが未確定
-- パネルの初期レイアウト(上下どちらに配置するか等)は未検討
+| 資産 | 内容 | 配置先 |
+|---|---|---|
+| `quokka-dark-gtk/` | GTK3テーマ `Quokka-Dark` | `/usr/share/themes/Quokka-Dark/` |
+| `xfce4-terminal/quokka.theme` | ターミナル配色スキーム | `/usr/share/xfce4/terminal/colorschemes/` |
+| `xfce4-terminal/terminalrc` | 既定ターミナル設定 | `/etc/xdg/xfce4/terminal/` |
+| `quokkafetch/` | 自作システム情報バナー | `/usr/local/bin/` + `/etc/profile.d/` |
+| `lightdm/` | ログイン画面テーマ | `/etc/lightdm/` |
+| `xfce4-defaults/xsettings.xml` | GTK/アイコン/フォントの既定 | `/etc/skel/.config/xfce4/xfconf/...` |
+| `xfce4-defaults/xfwm4.xml` | Arc-Dark を使う xfwm4 既定値 | `/etc/skel/.config/xfce4/xfconf/...` |
+| `xfce4-defaults/xfce4-panel.xml` | 上部シングルパネルの xfconf | `/etc/skel/.config/xfce4/xfconf/...` |
+| `xfce4-panel/` | ランチャー/時計/セパレータ設定 | `/etc/skel/.config/xfce4/panel/` |
+
+## 未検証事項
+
+- `arc-theme` の xfwm4 見た目は実機/X11 環境で要確認
+- パネル plugin ID / 初回ログイン時レイアウト復元は XFCE 実機で要確認
+- `papirus-icon-theme` の availability はネットワーク環境で要確認

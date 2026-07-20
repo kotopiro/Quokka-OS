@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Quokka-Dark
+Comment=Quokka OS default theme — Adwaita-dark base, cyan accent (branding/palette/palette.md)
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Quokka-Dark
+MetacityTheme=Quokka-Dark
+IconTheme=Papirus-Dark
+CursorTheme=Adwaita
+ButtonLayout=close,minimize,maximize:menu

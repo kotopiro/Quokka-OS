@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+
+for gz in \
+    /usr/share/wordlists/rockyou.txt.gz \
+    /usr/share/seclists/Passwords/Leaked-Databases/rockyou.txt.tar.gz
+ do
+    if [ -f "$gz" ]; then
+        gunzip -kf "$gz" || true
+    fi
+ done
