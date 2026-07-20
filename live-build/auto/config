@@ -71,4 +71,3 @@ lb config noauto \
     --mirror-binary "http://deb.debian.org/debian/" \
     "$@"
 
-    "$@"
