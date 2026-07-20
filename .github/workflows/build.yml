@@ -89,8 +89,9 @@ jobs:
           # 設定の実行。オプションエラーを避けるため最小限のフラグで実行します
           sudo -E lb config --mode debian --security true
           
-          # ユーザー独自の auto/config を実行
-          ./auto/config
+          # ユーザー独自の auto/config を管理者権限で実行
+          sudo -E ./auto/config
+
 
       - name: Build ISO
         working-directory: live-build
