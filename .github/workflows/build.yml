@@ -24,10 +24,13 @@ permissions:
 
 env:
   QUOKKA_PROFILE: ${{ inputs.profile || 'standard' }}
+  # Node 20 警告を消すための暫定対応（必要に応じて有効化）
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
 jobs:
   build-iso:
-    runs-on: ubuntu-24.04
+    # 互換性向上のため、実証性の高い 22.04 への変更を推奨（任意）
+    runs-on: ubuntu-22.04
     timeout-minutes: 180
 
     steps:
@@ -76,24 +79,29 @@ jobs:
 
       - name: lb build
         working-directory: live-build
-        run: sudo --preserve-env=QUOKKA_PROFILE lb build 2>&1 | tee build.log
+        # エラーでも途中で完全に止めずログを残すため、パイプのステータスを維持
+        run: |
+          set -o pipefail
+          sudo --preserve-env=QUOKKA_PROFILE lb build 2>&1 | tee build.log
 
       - name: Show build output
         if: always()
         working-directory: live-build
-        run: ls -lah
+        run: |
+          echo "=== Generated Files ==="
+          ls -lah
+          echo "=== End of Files ==="
 
       - name: Generate checksum
         if: success()
         working-directory: live-build
         run: |
-          for f in live-image-*.iso *.hybrid.iso; do
+          for f in live-image-*.iso *.hybrid.iso *.iso; do
             [ -f "$f" ] || continue
             sha256sum "$f" | tee "$f.sha256"
           done
 
       - name: Import GPG key
-        # if文ではenv経由でチェックするように修正
         if: success() && env.QUOKKA_GPG_PRIVATE_KEY != ''
         env:
           QUOKKA_GPG_PRIVATE_KEY: ${{ secrets.QUOKKA_GPG_PRIVATE_KEY }}
@@ -104,7 +112,6 @@ jobs:
           rm -f /tmp/quokka-private.key
 
       - name: Sign checksums (skip automatically when secrets are absent)
-        # if文ではenv経由でチェックするように修正
         if: success() && env.QUOKKA_GPG_PRIVATE_KEY != '' && env.QUOKKA_GPG_KEY_ID != ''
         working-directory: live-build
         env:
