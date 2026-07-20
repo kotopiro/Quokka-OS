@@ -23,7 +23,8 @@ permissions:
   contents: read
 
 env:
-  QUOKKA_PROFILE: ${{ github.event.inputs.profile || 'standard' }}
+  # pushイベント等でもデフォルト値が入るように修正
+  QUOKKA_PROFILE: ${{ inputs.profile || 'standard' }}
 
 jobs:
   build-iso:
@@ -97,6 +98,8 @@ jobs:
         env:
           QUOKKA_GPG_PRIVATE_KEY: ${{ secrets.QUOKKA_GPG_PRIVATE_KEY }}
         run: |
+          # ログへの漏洩防止措置を追加
+          set +x
           echo "$QUOKKA_GPG_PRIVATE_KEY" | base64 -d > /tmp/quokka-private.key
           gpg --batch --import /tmp/quokka-private.key
           rm -f /tmp/quokka-private.key
