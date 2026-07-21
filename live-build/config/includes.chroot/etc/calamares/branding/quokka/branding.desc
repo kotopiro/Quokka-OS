@@ -1,0 +1,40 @@
+---
+# Quokka OS — Calamares branding component
+# 配置先: /etc/calamares/branding/quokka/
+# calamares-settings-debian の settings.conf で branding: quokka に切り替えて使う
+# (build hook: hooks/normal/0110-quokka-calamares-branding.hook.chroot)
+#
+# 注意: このYAMLのキー名はCalamaresのバージョンに依存する可能性があるため、
+# 実ビルド・実機起動確認の際に `calamares --debug` のログでスキーマエラーが
+# 出ていないか必ず確認すること(このサンドボックスでは検証不可)。
+
+componentName: quokka
+
+welcomeStyleCalamares: true
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 800px,520px
+
+strings:
+    productName: "Quokka OS"
+    shortProductName: "Quokka"
+    version: "1.0"
+    shortVersion: "1.0"
+    versionedName: "Quokka OS 1.0"
+    shortVersionedName: "Quokka 1.0"
+    bootloaderEntryName: "Quokka OS"
+
+images:
+    productLogo: "logo.png"
+    productIcon: "logo.png"
+    productWelcome: "welcome.png"
+
+slideshow: "show.qml"
+slideshowAPI: 2
+
+style:
+   sidebarBackground:     "#0A0F1E"
+   sidebarText:            "#E8FBFF"
+   sidebarTextSelect:     "#00CFFE"
+   sidebarTextHighlight:  "#111A2E"
+   sidebarTextCurrent:    "#00CFFE"

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Quokka Undercover
+Name[ja]=Quokka Undercover(外見偽装)
+Comment=Toggle a low-profile desktop appearance for public use
+Comment[ja]=公共の場向けに、目立たない配色へ切り替えます
+Exec=quokka-undercover toggle
+Icon=preferences-desktop-theme
+Terminal=false
+Categories=System;Settings;
+StartupNotify=false

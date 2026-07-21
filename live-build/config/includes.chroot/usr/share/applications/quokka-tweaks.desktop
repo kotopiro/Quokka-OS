@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Quokka Tweaks
+Name[ja]=Quokka Tweaks
+Comment=Quokka OS settings hub
+Comment[ja]=Quokka OS の設定ハブ
+Exec=quokka-tweaks
+Icon=/usr/share/icons/quokka/logo.png
+Terminal=false
+Categories=System;Settings;
+StartupNotify=false

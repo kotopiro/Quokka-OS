@@ -1,0 +1,60 @@
+#!/bin/sh
+# Quokka Undercover — Kali Undercoverと同じ発想の外見偽装トグル。
+# XFCEの見た目をQuokkaブランドの配色から、目立たない一般的な配色に切り替える。
+#
+# 注意(正直な制約): Kali Undercoverは実際のWindows 10風UIを精巧に再現しているが、
+# ここではそこまでの専用テーマ資産(アイコン・壁紙・ウィンドウ装飾の作り込み)は
+# 用意していない。ベースで入っている汎用テーマ(Adwaita / xfwm4 Default)への
+# 切り替えに留めている一次実装。テーマ名は実機ビルドで実在を要確認。
+set -eu
+
+STATE_FILE="$HOME/.config/quokka-undercover.state"
+mkdir -p "$(dirname "$STATE_FILE")"
+
+QUOKKA_GTK_THEME="Quokka-Dark"
+QUOKKA_XFWM_THEME="Arc-Dark"
+QUOKKA_ICON_THEME="Papirus-Dark"
+
+PLAIN_GTK_THEME="Adwaita"
+PLAIN_XFWM_THEME="Default"
+PLAIN_ICON_THEME="Adwaita"
+
+current_state() {
+    [ -f "$STATE_FILE" ] && cat "$STATE_FILE" || echo "quokka"
+}
+
+apply_plain() {
+    xfconf-query -c xsettings -p /Net/ThemeName -s "$PLAIN_GTK_THEME" 2>/dev/null || true
+    xfconf-query -c xsettings -p /Net/IconThemeName -s "$PLAIN_ICON_THEME" 2>/dev/null || true
+    xfconf-query -c xfwm4 -p /general/theme -s "$PLAIN_XFWM_THEME" 2>/dev/null || true
+    echo "plain" > "$STATE_FILE"
+    echo "Quokka Undercover: 目立たない配色に切り替えました。"
+}
+
+apply_quokka() {
+    xfconf-query -c xsettings -p /Net/ThemeName -s "$QUOKKA_GTK_THEME" 2>/dev/null || true
+    xfconf-query -c xsettings -p /Net/IconThemeName -s "$QUOKKA_ICON_THEME" 2>/dev/null || true
+    xfconf-query -c xfwm4 -p /general/theme -s "$QUOKKA_XFWM_THEME" 2>/dev/null || true
+    echo "quokka" > "$STATE_FILE"
+    echo "Quokka Undercover: Quokkaブランドの配色に戻しました。"
+}
+
+case "${1:-toggle}" in
+    toggle)
+        if [ "$(current_state)" = "quokka" ]; then
+            apply_plain
+        else
+            apply_quokka
+        fi
+        ;;
+    plain)
+        apply_plain
+        ;;
+    quokka)
+        apply_quokka
+        ;;
+    *)
+        echo "Usage: quokka-undercover [toggle|plain|quokka]" >&2
+        exit 1
+        ;;
+esac

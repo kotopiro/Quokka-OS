@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenVPN — Quokka OS Docs</title>
+<style>
+  :root {
+    --quokka-bg: #000410;
+    --quokka-bg-elevated: #0A0F1E;
+    --quokka-bg-elevated-2: #111A2E;
+    --quokka-cyan: #00CFFE;
+    --quokka-cyan-dim: #0088AF;
+    --quokka-cyan-glow: #7BEFFF;
+    --quokka-text: #E8FBFF;
+    --quokka-text-muted: #5C7A8A;
+    --quokka-critical: #FF3B5C;
+    --quokka-warning: #FFB020;
+    --quokka-success: #39FF88;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--quokka-bg);
+    color: var(--quokka-text);
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, Menlo, Consolas, monospace;
+    display: flex;
+    min-height: 100vh;
+  }
+  nav {
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--quokka-bg-elevated);
+    border-right: 1px solid var(--quokka-cyan-dim);
+    padding: 24px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  nav .brand {
+    padding: 0 20px 20px 20px;
+    border-bottom: 1px solid var(--quokka-bg-elevated-2);
+    margin-bottom: 12px;
+  }
+  nav .brand a {
+    color: var(--quokka-cyan);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.15em;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 8px rgba(0,207,254,0.5);
+  }
+  nav .brand .tagline {
+    display: block;
+    color: var(--quokka-text-muted);
+    font-size: 0.72em;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+  nav ul { list-style: none; margin: 0; padding: 0; }
+  nav li a {
+    display: block;
+    padding: 9px 20px;
+    color: var(--quokka-text-muted);
+    text-decoration: none;
+    font-size: 0.92em;
+    border-left: 3px solid transparent;
+    transition: all 0.15s ease;
+  }
+  nav li a:hover {
+    color: var(--quokka-text);
+    background: var(--quokka-bg-elevated-2);
+  }
+  nav li a.active {
+    color: var(--quokka-cyan);
+    border-left: 3px solid var(--quokka-cyan);
+    background: var(--quokka-bg-elevated-2);
+    text-shadow: 0 0 6px rgba(0,207,254,0.4);
+  }
+  main {
+    flex: 1;
+    max-width: 900px;
+    padding: 48px 56px 96px 56px;
+  }
+  h1, h2, h3, h4 {
+    color: var(--quokka-cyan);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  h1 {
+    font-size: 1.9em;
+    border-bottom: 1px solid var(--quokka-cyan-dim);
+    padding-bottom: 12px;
+    margin-top: 0;
+    text-shadow: 0 0 10px rgba(0,207,254,0.35);
+  }
+  h2 { font-size: 1.35em; margin-top: 2.2em; }
+  h3 { font-size: 1.1em; color: var(--quokka-cyan-glow); }
+  a { color: var(--quokka-cyan); }
+  p, li { line-height: 1.75; color: var(--quokka-text); font-size: 0.95em; }
+  code {
+    background: var(--quokka-bg-elevated-2);
+    color: var(--quokka-cyan-glow);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  pre {
+    background: var(--quokka-bg-elevated);
+    border: 1px solid var(--quokka-bg-elevated-2);
+    border-left: 3px solid var(--quokka-cyan-dim);
+    padding: 16px 20px;
+    overflow-x: auto;
+    border-radius: 4px;
+  }
+  pre code { background: none; padding: 0; color: var(--quokka-text); }
+  table { border-collapse: collapse; width: 100%; margin: 1.2em 0; }
+  th, td {
+    border: 1px solid var(--quokka-bg-elevated-2);
+    padding: 8px 14px;
+    text-align: left;
+    font-size: 0.9em;
+  }
+  th { color: var(--quokka-cyan); background: var(--quokka-bg-elevated); }
+  tr:nth-child(even) { background: var(--quokka-bg-elevated); }
+  blockquote {
+    border-left: 3px solid var(--quokka-warning);
+    margin: 1em 0;
+    padding: 4px 18px;
+    color: var(--quokka-text-muted);
+  }
+  hr { border: none; border-top: 1px solid var(--quokka-bg-elevated-2); margin: 2.5em 0; }
+  ul.task-list { list-style: none; padding-left: 0.4em; }
+  ul.task-list li { margin: 4px 0; }
+  footer {
+    max-width: 900px;
+    color: var(--quokka-text-muted);
+    font-size: 0.78em;
+    padding: 0 56px 40px 56px;
+    margin-top: -40px;
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">
+    <a href="index.html">QUOKKA OS</a>
+    <span class="tagline">pentest distro docs</span>
+  </div>
+  <ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="roadmap.html">Roadmap</a></li>
+<li><a href="distro-decision.html">Distro Decision</a></li>
+<li><a href="tool-selection.html">Tool Selection</a></li>
+<li><a href="desktop-environment.html">Desktop Environment</a></li>
+<li><a href="installer.html">Installer</a></li>
+<li><a href="palette.html">Brand Palette</a></li>
+<li><a href="pentest-config.html">Pentest Config</a></li>
+<li><a href="openvpn.html" class="active">OpenVPN</a></li>
+<li><a href="live-build.html">Live Build (ISO)</a></li>
+<li><a href="vm-build.html">VM Build</a></li>
+  </ul>
+</nav>
+<main>
+<h1 id="openvpn-運用メモ">OpenVPN 運用メモ</h1>
+<h2 id="推奨手順">推奨手順</h2>
+<ol type="1">
+<li><code>.ovpn</code> を <code>/etc/openvpn/client/</code>
+に配置する</li>
+<li>資格情報が必要なら
+<code>/etc/openvpn/client/&lt;name&gt;.auth</code> を
+<code>chmod 600</code> で作る</li>
+<li>CLI:
+<code>sudo openvpn --config /etc/openvpn/client/&lt;name&gt;.ovpn</code></li>
+<li>NetworkManager GUI を使う場合は <code>network-manager-openvpn</code>
+を利用する</li>
+</ol>
+<h2 id="kill-switch-併用例">kill switch 併用例</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> quokka-vpn-killswitch enable <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--uplink</span> wlan0 <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--endpoint</span> vpn.example.com <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--vpn-if</span> tun0 <span class="dt">\</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--port</span> 1194 <span class="dt">\</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--proto</span> udp</span></code></pre></div>
+<h2 id="備考">備考</h2>
+<ul>
+<li>kill switch は VPN サーバーの到達先のみ uplink
+側へ許可し、それ以外の平文外向き通信を遮断する設計</li>
+<li>実運用では接続先 IP 変更・IPv6・社内 DNS などの要件に応じて nftables
+ルールを調整すること</li>
+</ul>
+
+</main>
+</body>
+</html>

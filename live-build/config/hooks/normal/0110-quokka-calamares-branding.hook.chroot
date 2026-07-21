@@ -1,0 +1,19 @@
+#!/bin/sh
+# Quokka OS — Calamaresのbrandingをdebian既定からquokkaへ切り替える
+# calamares-settings-debian パッケージが /etc/calamares/settings.conf を
+# `branding: debian` で持ってくるので、それをビルド時に上書きする。
+set -e
+
+SETTINGS=/etc/calamares/settings.conf
+
+if [ -f "$SETTINGS" ]; then
+    if grep -q '^branding:' "$SETTINGS"; then
+        sed -i 's/^branding:.*/branding: quokka/' "$SETTINGS"
+        echo "[quokka] calamares branding -> quokka"
+    else
+        echo "[quokka] WARNING: $SETTINGS に 'branding:' 行が見つからず。" \
+             "calamares-settings-debian の書式が変わっている可能性があるので手動確認が必要。" >&2
+    fi
+else
+    echo "[quokka] WARNING: $SETTINGS が存在しない。calamares-settings-debian のインストールを確認すること。" >&2
+fi

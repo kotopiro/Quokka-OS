@@ -12,6 +12,8 @@ live-config-systemd
 grub-common
 grub-pc-bin
 grub-efi-amd64-bin
+calamares
+calamares-settings-debian
 debian-installer-launcher
 network-manager
 network-manager-openvpn
@@ -27,3 +29,9 @@ arc-theme
 papirus-icon-theme
 fonts-jetbrains-mono
 xfce4-pulseaudio-plugin
+# kali-menu: Kaliリポジトリ提供の「攻撃フェーズ別カテゴリメニュー」構造(01-info-gathering等)。
+# 自前で再実装するより、既にKaliリポジトリをオーバーレイ済みなのでこちらを使う方が確実。
+# 見た目(アイコン/配色)はQuokkaテーマがそのまま乗る想定だが、実ビルドでの確認は未実施。
+kali-menu
+# zenity: quokka-welcome / quokka-tweaks のGUIダイアログ用
+zenity

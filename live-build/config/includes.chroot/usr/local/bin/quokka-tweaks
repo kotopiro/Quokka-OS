@@ -1,0 +1,56 @@
+#!/bin/sh
+# Quokka Tweaks — Kaliの `kali-tweaks` に相当する設定ハブ。
+# 正直な制約: 本家kali-tweaksはPython/newtでできた本格的なTUIアプリだが、
+# こちらはzenityによる軽量メニューでの一次実装(機能の入り口を一箇所にまとめる、が主眼)。
+set -eu
+
+ICON=/usr/share/icons/quokka/logo.png
+
+while true; do
+    choice=$(zenity --list \
+        --title="Quokka Tweaks" \
+        --text="Quokka OS の各種設定・切り替え機能" \
+        --window-icon="$ICON" \
+        --width=520 --height=420 \
+        --column="項目" --column="説明" --hide-header \
+        "profile"     "現在のビルドプロファイル(standard/full)を表示" \
+        "undercover"  "Quokka Undercover(外見偽装)をトグル" \
+        "monitor-list" "無線インターフェース一覧を表示(iw dev)" \
+        "vpn-status"  "VPN kill switchの状態を表示" \
+        "wallpaper"   "壁紙をQuokkaデフォルトに戻す" \
+        "docs"        "ドキュメントサイトを開く" \
+        "quit"        "閉じる" \
+        2>/dev/null || echo "quit")
+
+    case "$choice" in
+        profile)
+            zenity --info --title="ビルドプロファイル" --window-icon="$ICON" \
+                --text="$( [ -f /etc/os-release ] && grep -i quokka /etc/os-release || echo '/etc/os-release からQuokka情報を取得できませんでした' )"
+            ;;
+        undercover)
+            quokka-undercover toggle || true
+            ;;
+        monitor-list)
+            TMP="$(mktemp)"
+            (iw dev 2>&1 || echo "iw が見つからないか、権限がありません") > "$TMP"
+            zenity --text-info --title="無線インターフェース一覧" --window-icon="$ICON" \
+                --width=480 --height=300 --filename="$TMP"
+            rm -f "$TMP"
+            ;;
+        vpn-status)
+            TMP="$(mktemp)"
+            (sudo -n nft list table inet quokka_vpn 2>&1 || echo "無効、または要sudo権限") > "$TMP"
+            zenity --text-info --title="VPN kill switch 状態" --window-icon="$ICON" \
+                --width=480 --height=300 --filename="$TMP"
+            rm -f "$TMP"
+            ;;
+        wallpaper)
+            xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image \
+                -s /usr/share/backgrounds/quokka/quokka-wallpaper-1920x1080.png 2>/dev/null || true
+            zenity --info --title="壁紙" --window-icon="$ICON" --text="壁紙をQuokkaデフォルトに戻しました(反映されない場合は一度ログアウト/インしてください)。"
+            ;;
+        quit|*)
+            break
+            ;;
+    esac
+done

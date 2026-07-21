@@ -1,0 +1,51 @@
+#!/bin/sh
+# Quokka Welcome — 初回ログイン時に一度だけ表示するウェルカムダイアログ。
+# zenityベースの軽量実装(GNOME initial-setup的なフル自作ウィザードではない、正直な制約)。
+set -eu
+
+MARKER="$HOME/.config/quokka-welcome.shown"
+mkdir -p "$(dirname "$MARKER")"
+
+# 通常の自動起動では「一度だけ」。手動で `quokka-welcome --force` すれば毎回出せる。
+if [ -f "$MARKER" ] && [ "${1:-}" != "--force" ]; then
+    exit 0
+fi
+
+ICON=/usr/share/icons/quokka/logo.png
+
+choice=$(zenity --list \
+    --title="Quokka OS へようこそ" \
+    --text="<b>Quokka OS</b> はDebianベースのペネトレーションテスト特化ディストリビューションです。\n最初に使うことが多い機能をここから開けます。" \
+    --window-icon="$ICON" \
+    --width=520 --height=380 \
+    --column="操作" --column="説明" --hide-header \
+    "docs"        "ドキュメントサイトを開く" \
+    "tweaks"      "Quokka Tweaks(設定ハブ)を開く" \
+    "monitor"     "モニターモード切替コマンドの使い方を見る" \
+    "vpn"         "VPN kill switchの使い方を見る" \
+    "undercover"  "Quokka Undercoverを試す(外見偽装トグル)" \
+    "close"       "閉じる(次回は表示しない)" \
+    2>/dev/null || true)
+
+case "$choice" in
+    docs)
+        xdg-open /usr/share/doc/quokka-os/site/index.html 2>/dev/null || \
+        xdg-open file:///usr/share/doc/quokka-os/site/index.html 2>/dev/null || true
+        ;;
+    tweaks)
+        quokka-tweaks || true
+        ;;
+    monitor)
+        zenity --info --title="quokka-monitor の使い方" --window-icon="$ICON" --text="ターミナルで:\n\n  sudo quokka-monitor list\n  sudo quokka-monitor start wlan0\n  sudo quokka-monitor stop wlan0mon\n\n詳細は quokka-monitor --help 相当のUsageを参照。"
+        ;;
+    vpn)
+        zenity --info --title="quokka-vpn-killswitch の使い方" --window-icon="$ICON" --text="ターミナルで:\n\n  sudo quokka-vpn-killswitch enable --uplink eth0 --endpoint vpn.example.com\n  sudo quokka-vpn-killswitch status\n  sudo quokka-vpn-killswitch disable\n\n詳細は pentest-config/README.md を参照。"
+        ;;
+    undercover)
+        quokka-undercover toggle || true
+        ;;
+    *)
+        ;;
+esac
+
+touch "$MARKER"

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Quokka Welcome
+Name[ja]=Quokka Welcome
+Comment=First-login welcome dialog (shows once)
+Exec=quokka-welcome
+Icon=/usr/share/icons/quokka/logo.png
+Terminal=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
+Hidden=false
