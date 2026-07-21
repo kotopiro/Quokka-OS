@@ -64,16 +64,7 @@ jobs:
           cp /usr/share/keyrings/kali-archive-keyring.gpg live-build/config/archives/kali.key.chroot
           cp /usr/share/keyrings/kali-archive-keyring.gpg live-build/config/archives/kali.key.binary
 
-      - name: lb clean
-        working-directory: live-build
-        run: |
-          # live-build自体のクリーンアップ
-          sudo lb clean --purge || true
-          # 周辺の隠しフォルダや自動生成ファイルを徹底的に全削除
-          sudo rm -rf .build/ cache/ config/bootstrap config/chroot config/binary config/source config/stage config/rootfs
-          sudo rm -rf ../.build/ ../cache/
-
-           - name: lb build
+      - name: lb build
         working-directory: live-build
         shell: bash
         run: |
