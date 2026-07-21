@@ -23,18 +23,18 @@ permissions:
   contents: read
 
 env:
-  QUOKKA_PROFILE: ${{ inputs.profile || 'standard' }}
+  QUOKKA_PROFILE: ${{ github.event.inputs.profile || 'standard' }}
 
 jobs:
   build-iso:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 180
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Free up disk space
+      - name: Free up disk space (live-build needs a lot)
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
           df -h
@@ -59,50 +59,24 @@ jobs:
             ca-certificates \
             gnupg
 
-      - name: Fetch Kali archive key
+      - name: Fetch Kali archive key (if not already committed)
         run: |
           mkdir -p live-build/config/archives
-          # 鍵をバイナリ形式に変換 (dearmor)。
-          # これをしないと APT が "unsupported filetype" で鍵を拒否し NO_PUBKEY エラーになります。
-          wget -qO - https://archive.kali.org/archive-key.asc | gpg --dearmor | sudo tee live-build/config/archives/kali.key.chroot > /dev/null
+          if [ ! -s live-build/config/archives/kali.key.chroot ]; then
+            wget https://archive.kali.org/archive-key.asc \
+              -O live-build/config/archives/kali.key.chroot
+          fi
 
       - name: Show selected profile
         run: echo "QUOKKA_PROFILE=${QUOKKA_PROFILE}"
 
-      - name: Clean previous build
+      - name: lb clean
         working-directory: live-build
-        run: sudo lb clean --purge
+        run: sudo lb clean
 
-      - name: Configure live-build
+      - name: lb build
         working-directory: live-build
-        run: |
-          chmod +x auto/config
-          
-          # 環境変数をセット（末尾にスラッシュを追加）
-          export LB_MODE="debian"
-          export LB_PARENT_MIRROR_CHROOT_SECURITY="http://debian.org"
-          export LB_PARENT_MIRROR_BINARY_SECURITY="http://debian.org"
-          export LB_MIRROR_CHROOT_SECURITY="http://debian.org"
-          export LB_MIRROR_BINARY_SECURITY="http://debian.org"
-          
-          # 【最重要】--security-distribution bookworm-security を追加します
-          sudo -E lb config --mode debian --security true --security-distribution bookworm-security
-          
-          sudo -E ./auto/config
-
-
-      - name: Build ISO
-        working-directory: live-build
-        run: |
-          set -o pipefail
-          
-          # ビルド時にも環境変数を維持して、Ubuntuミラーの混入を徹底的に防ぎます
-          export LB_MODE="debian"
-          export LB_PARENT_MIRROR_CHROOT_SECURITY="http://security.debian.org/debian-security"
-          export LB_PARENT_MIRROR_BINARY_SECURITY="http://security.debian.org/debian-security"
-          
-          # sudo -E を使うことで上記の環境変数を chroot 内のビルドプロセスに引き継ぎます
-          sudo -E --preserve-env=QUOKKA_PROFILE lb build 2>&1 | tee build.log
+        run: sudo --preserve-env=QUOKKA_PROFILE lb build 2>&1 | tee build.log
 
       - name: Show build output
         if: always()
@@ -112,42 +86,33 @@ jobs:
       - name: Generate checksum
         if: success()
         working-directory: live-build
-        shell: bash
         run: |
-          shopt -s nullglob
-          for f in *.iso *.hybrid.iso live-image-*.iso; do
-            sha256sum "$f" > "$f.sha256"
+          for f in live-image-*.iso *.hybrid.iso; do
+            [ -f "$f" ] || continue
+            sha256sum "$f" | tee "$f.sha256"
           done
 
       - name: Import GPG key
-        if: success()
+        if: success() && secrets.QUOKKA_GPG_PRIVATE_KEY != ''
         env:
           QUOKKA_GPG_PRIVATE_KEY: ${{ secrets.QUOKKA_GPG_PRIVATE_KEY }}
         run: |
-          if [ -z "$QUOKKA_GPG_PRIVATE_KEY" ]; then
-            echo "No GPG key configured."
-            exit 0
-          fi
-          echo "$QUOKKA_GPG_PRIVATE_KEY" | base64 -d > /tmp/quokka.key
-          gpg --batch --import /tmp/quokka.key
-          rm -f /tmp/quokka.key
+          echo "$QUOKKA_GPG_PRIVATE_KEY" | base64 -d > /tmp/quokka-private.key
+          gpg --batch --import /tmp/quokka-private.key
+          rm -f /tmp/quokka-private.key
 
-      - name: Sign checksums
-        if: success()
+      - name: Sign checksums (skip automatically when secrets are absent)
+        if: success() && secrets.QUOKKA_GPG_PRIVATE_KEY != '' && secrets.QUOKKA_GPG_KEY_ID != ''
         working-directory: live-build
-        shell: bash
         env:
           QUOKKA_GPG_KEY_ID: ${{ secrets.QUOKKA_GPG_KEY_ID }}
           QUOKKA_GPG_PASSPHRASE: ${{ secrets.QUOKKA_GPG_PASSPHRASE }}
         run: |
-          if [ -z "$QUOKKA_GPG_KEY_ID" ]; then
-            echo "Skipping signing."
-            exit 0
-          fi
           shopt -s nullglob
           for checksum in *.sha256; do
             if [ -n "${QUOKKA_GPG_PASSPHRASE:-}" ]; then
-              gpg --batch --yes --pinentry-mode loopback --passphrase "$QUOKKA_GPG_PASSPHRASE" --local-user "$QUOKKA_GPG_KEY_ID" --armor --detach-sign "$checksum"
+              gpg --batch --yes --pinentry-mode loopback --passphrase "$QUOKKA_GPG_PASSPHRASE" \
+                --local-user "$QUOKKA_GPG_KEY_ID" --armor --detach-sign "$checksum"
             else
               gpg --batch --yes --local-user "$QUOKKA_GPG_KEY_ID" --armor --detach-sign "$checksum"
             fi
@@ -165,7 +130,7 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: Upload build log
+      - name: Upload build log (always, for debugging failures)
         if: always()
         uses: actions/upload-artifact@v4
         with:
