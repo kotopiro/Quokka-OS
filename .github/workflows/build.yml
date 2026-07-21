@@ -24,7 +24,6 @@ permissions:
 
 env:
   QUOKKA_PROFILE: ${{ github.event.inputs.profile || 'standard' }}
-  # シークレットの存在チェックを環境変数にラップ（if文でのエラーを回避）
   HAS_GPG_KEY: ${{ secrets.QUOKKA_GPG_PRIVATE_KEY != '' }}
   HAS_GPG_ID: ${{ secrets.QUOKKA_GPG_KEY_ID != '' }}
 
@@ -59,17 +58,23 @@ jobs:
 
       - name: Setup Kali Archive Key
         run: |
+          # 1. ホスト環境（GitHub Runner）にKaliの公式リポジトリと鍵を登録して整合性を確保
+          wget -q -O - https://archive.kali.org/archive-keyring.gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/kali-archive-keyring.gpg
+          echo "deb http://kali.org kali-rolling main contrib non-free non-free-firmware" | sudo tee /etc/apt/sources.list.d/kali.list
+          sudo apt-get update
+          
+          # 2. live-build用のディレクトリを作成
           mkdir -p live-build/config/archives
-          wget -q -O - https://archive.kali.org/archive-key.asc | gpg --dearmor | sudo tee /usr/share/keyrings/kali-archive-keyring.gpg > /dev/null
-          cp /usr/share/keyrings/kali-archive-keyring.gpg live-build/config/archives/kali.key.chroot
-          cp /usr/share/keyrings/kali-archive-keyring.gpg live-build/config/archives/kali.key.binary
+          
+          # 3. live-buildが正しく読み込めるよう、公式のGPG鍵を「ASCIIアームド形式（.asc）」に変換して配置
+          curl -s https://archive.kali.org/archive-keyring.gpg | gpg --dearmor | gpg --enarmor > live-build/config/archives/kali.key.chroot
+          cp live-build/config/archives/kali.key.chroot live-build/config/archives/kali.key.binary
 
-      -      - name: lb build
+      - name: lb build
         working-directory: live-build
         shell: bash
         run: |
           # 1. 過去の設定や不正なキャッシュディレクトリのみを個別に物理削除
-          # (auto フォルダ自体を巻き添えで消さないように安全なターゲットのみ指定)
           sudo rm -rf .build cache config/bootstrap config/chroot config/binary config/rootfs
           sudo rm -f *.iso *.sha256 *.asc *.log
           
@@ -97,7 +102,6 @@ jobs:
             exit 1
           fi
 
-
       - name: Post-process and Rename ISO
         working-directory: live-build
         run: |
@@ -115,7 +119,6 @@ jobs:
           sha256sum "${{ env.ISO_FILENAME }}" > "${{ env.ISO_FILENAME }}.sha256"
 
       - name: Import GPG key
-        # secrets を直接参照せず、ジョブレベルの env を参照
         if: success() && env.HAS_GPG_KEY == 'true'
         run: |
           echo "${{ secrets.QUOKKA_GPG_PRIVATE_KEY }}" | base64 -d > /tmp/quokka-private.key
@@ -123,7 +126,6 @@ jobs:
           rm -f /tmp/quokka-private.key
 
       - name: Sign checksums
-        # secrets を直接参照せず、ジョブレベルの env を参照
         if: success() && env.HAS_GPG_KEY == 'true' && env.HAS_GPG_ID == 'true'
         working-directory: live-build
         env:
