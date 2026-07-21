@@ -66,7 +66,12 @@ jobs:
 
       - name: lb clean
         working-directory: live-build
-        run: sudo lb clean --all
+        run: |
+          sudo lb clean --all
+          # 残存するキャッシュディレクトリを強制的に物理削除
+          sudo rm -rf cache/
+          sudo rm -rf .build/
+
 
       - name: lb build
         working-directory: live-build
