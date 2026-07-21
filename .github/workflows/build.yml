@@ -67,22 +67,29 @@ jobs:
       - name: lb clean
         working-directory: live-build
         run: |
-          sudo lb clean --all
-          # 残存するキャッシュディレクトリを強制的に物理削除
-          sudo rm -rf cache/
-          sudo rm -rf .build/
-
+          # live-build自体のクリーンアップ
+          sudo lb clean --purge || true
+          # 周辺の隠しフォルダや自動生成ファイルを徹底的に全削除
+          sudo rm -rf .build/ cache/ config/bootstrap config/chroot config/binary config/source config/stage config/rootfs
+          sudo rm -rf ../.build/ ../cache/
 
       - name: lb build
         working-directory: live-build
         shell: bash
         run: |
-          sudo rm -f *.iso *.sha256 *.asc
+          # ビルド直前にもう一度生存確認して徹底削除
+          sudo rm -rf .build cache config/bootstrap
+          sudo rm -f *.iso *.sha256 *.asc *.log
+          
+          # 新鮮な状態で設定を再生成させてからビルドを実行
+          sudo lb config
           sudo --preserve-env=QUOKKA_PROFILE lb build 2>&1 | tee build.log
+          
           if [ ! -f *.iso ]; then
             echo "Error: ISO image was not generated."
             exit 1
           fi
+
 
       - name: Post-process and Rename ISO
         working-directory: live-build
