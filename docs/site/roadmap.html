@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roadmap — Quokka OS Docs</title>
+<style>
+  :root {
+    --quokka-bg: #000410;
+    --quokka-bg-elevated: #0A0F1E;
+    --quokka-bg-elevated-2: #111A2E;
+    --quokka-cyan: #00CFFE;
+    --quokka-cyan-dim: #0088AF;
+    --quokka-cyan-glow: #7BEFFF;
+    --quokka-text: #E8FBFF;
+    --quokka-text-muted: #5C7A8A;
+    --quokka-critical: #FF3B5C;
+    --quokka-warning: #FFB020;
+    --quokka-success: #39FF88;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--quokka-bg);
+    color: var(--quokka-text);
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, Menlo, Consolas, monospace;
+    display: flex;
+    min-height: 100vh;
+  }
+  nav {
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--quokka-bg-elevated);
+    border-right: 1px solid var(--quokka-cyan-dim);
+    padding: 24px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  nav .brand {
+    padding: 0 20px 20px 20px;
+    border-bottom: 1px solid var(--quokka-bg-elevated-2);
+    margin-bottom: 12px;
+  }
+  nav .brand a {
+    color: var(--quokka-cyan);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.15em;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 8px rgba(0,207,254,0.5);
+  }
+  nav .brand .tagline {
+    display: block;
+    color: var(--quokka-text-muted);
+    font-size: 0.72em;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+  nav ul { list-style: none; margin: 0; padding: 0; }
+  nav li a {
+    display: block;
+    padding: 9px 20px;
+    color: var(--quokka-text-muted);
+    text-decoration: none;
+    font-size: 0.92em;
+    border-left: 3px solid transparent;
+    transition: all 0.15s ease;
+  }
+  nav li a:hover {
+    color: var(--quokka-text);
+    background: var(--quokka-bg-elevated-2);
+  }
+  nav li a.active {
+    color: var(--quokka-cyan);
+    border-left: 3px solid var(--quokka-cyan);
+    background: var(--quokka-bg-elevated-2);
+    text-shadow: 0 0 6px rgba(0,207,254,0.4);
+  }
+  main {
+    flex: 1;
+    max-width: 900px;
+    padding: 48px 56px 96px 56px;
+  }
+  h1, h2, h3, h4 {
+    color: var(--quokka-cyan);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  h1 {
+    font-size: 1.9em;
+    border-bottom: 1px solid var(--quokka-cyan-dim);
+    padding-bottom: 12px;
+    margin-top: 0;
+    text-shadow: 0 0 10px rgba(0,207,254,0.35);
+  }
+  h2 { font-size: 1.35em; margin-top: 2.2em; }
+  h3 { font-size: 1.1em; color: var(--quokka-cyan-glow); }
+  a { color: var(--quokka-cyan); }
+  p, li { line-height: 1.75; color: var(--quokka-text); font-size: 0.95em; }
+  code {
+    background: var(--quokka-bg-elevated-2);
+    color: var(--quokka-cyan-glow);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  pre {
+    background: var(--quokka-bg-elevated);
+    border: 1px solid var(--quokka-bg-elevated-2);
+    border-left: 3px solid var(--quokka-cyan-dim);
+    padding: 16px 20px;
+    overflow-x: auto;
+    border-radius: 4px;
+  }
+  pre code { background: none; padding: 0; color: var(--quokka-text); }
+  table { border-collapse: collapse; width: 100%; margin: 1.2em 0; }
+  th, td {
+    border: 1px solid var(--quokka-bg-elevated-2);
+    padding: 8px 14px;
+    text-align: left;
+    font-size: 0.9em;
+  }
+  th { color: var(--quokka-cyan); background: var(--quokka-bg-elevated); }
+  tr:nth-child(even) { background: var(--quokka-bg-elevated); }
+  blockquote {
+    border-left: 3px solid var(--quokka-warning);
+    margin: 1em 0;
+    padding: 4px 18px;
+    color: var(--quokka-text-muted);
+  }
+  hr { border: none; border-top: 1px solid var(--quokka-bg-elevated-2); margin: 2.5em 0; }
+  ul.task-list { list-style: none; padding-left: 0.4em; }
+  ul.task-list li { margin: 4px 0; }
+  footer {
+    max-width: 900px;
+    color: var(--quokka-text-muted);
+    font-size: 0.78em;
+    padding: 0 56px 40px 56px;
+    margin-top: -40px;
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">
+    <a href="index.html">QUOKKA OS</a>
+    <span class="tagline">pentest distro docs</span>
+  </div>
+  <ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="roadmap.html" class="active">Roadmap</a></li>
+<li><a href="distro-decision.html">Distro Decision</a></li>
+<li><a href="tool-selection.html">Tool Selection</a></li>
+<li><a href="desktop-environment.html">Desktop Environment</a></li>
+<li><a href="installer.html">Installer</a></li>
+<li><a href="palette.html">Brand Palette</a></li>
+<li><a href="pentest-config.html">Pentest Config</a></li>
+<li><a href="openvpn.html">OpenVPN</a></li>
+<li><a href="live-build.html">Live Build (ISO)</a></li>
+<li><a href="vm-build.html">VM Build</a></li>
+  </ul>
+</nav>
+<main>
+<h1 id="quokka-os--ロードマップ">Quokka OS — ロードマップ</h1>
+<h2 id="milestone-1-ブランディング-">Milestone 1: ブランディング ✅</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />カラーパレット確定
+(<code>branding/palette/palette.md</code>)</label></li>
+<li><label><input type="checkbox" checked="" />Plymouth起動画面テーマ
+(<code>branding/plymouth/quokka/</code>)</label></li>
+<li><label><input type="checkbox" checked="" />GRUBブートメニューテーマ
+(<code>branding/grub/quokka/</code>)</label></li>
+<li><label><input type="checkbox" checked="" />デスクトップ壁紙
+1920x1080
+(<code>branding/palette/quokka-wallpaper-1920x1080.png</code>)</label></li>
+<li><label><input type="checkbox" checked="" />ベースディストリ決定
+(<code>docs/distro-decision.md</code>)</label></li>
+<li><label><input type="checkbox"
+checked="" />ロゴのSVG化(OpenCVで輪郭抽出→ベクターパス化。元画像とのIoU
+0.93)</label></li>
+<li><label><input type="checkbox"
+checked="" />GTK/Qtテーマへの配色反映(GTK側)</label></li>
+</ul>
+<h2 id="milestone-2-最小iso起動-bring-up">Milestone 2: 最小ISO起動
+(bring-up)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" /><code>live-build</code>
+の設定リポジトリ作成 (<code>live-build/</code>)</label></li>
+<li><label><input type="checkbox" checked="" />Debian
+base(bookworm)確定</label></li>
+<li><label><input type="checkbox" />実際にDebian環境で
+<code>lb build</code> を実行してISO生成</label></li>
+<li><label><input
+type="checkbox" />最小構成でVirtualBox/QEMU上での起動テスト・Plymouth/GRUBテーマの表示確認</label></li>
+</ul>
+<h2 id="milestone-3-ツール選定メタパッケージ化">Milestone 3:
+ツール選定・メタパッケージ化</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />収録ツールの選定方針決定
+(<code>docs/tool-selection.md</code>)</label></li>
+<li><label><input type="checkbox"
+checked="" />カテゴリ別package-lists作成 (標準6カテゴリ +
+Full版限定2カテゴリ)</label></li>
+<li><label><input type="checkbox"
+checked="" />Kaliリポジトリのオーバーレイ設定
+(<code>live-build/config/archives/</code>)</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>QUOKKA_PROFILE=standard|full</code> 分岐実装
+(<code>live-build/auto/config</code>)</label></li>
+<li><label><input type="checkbox" />GPG鍵の実データ配置
+(ネットワーク環境で <code>kali.key.chroot</code> 取得)</label></li>
+<li><label><input type="checkbox" />standard/full
+の両プロファイルで実ビルド確認</label></li>
+</ul>
+<h2 id="milestone-4-デスクトップ環境--uiテーマ">Milestone 4:
+デスクトップ環境 &amp; UIテーマ</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />DE選定
+(<code>docs/desktop-environment.md</code>)</label></li>
+<li><label><input type="checkbox" checked="" />GTKテーマ作成
+(<code>branding/desktop/quokka-dark-gtk/</code>)</label></li>
+<li><label><input type="checkbox" checked="" />ターミナル配色
+(<code>branding/desktop/xfce4-terminal/</code>)</label></li>
+<li><label><input type="checkbox" checked="" />MOTD / システム情報表示
+(<code>branding/desktop/quokkafetch/</code>)</label></li>
+<li><label><input type="checkbox"
+checked="" />ログイン画面(LightDM)テーマ
+(<code>branding/desktop/lightdm/</code>)</label></li>
+<li><label><input type="checkbox" checked="" />xfwm4 は Arc-Dark
+を採用し既定設定を作成</label></li>
+<li><label><input type="checkbox" checked="" />上部シングルパネルの既定
+xfconf を追加</label></li>
+<li><label><input type="checkbox" />実機での見た目確認</label></li>
+</ul>
+<h2 id="milestone-5-pentest特化設定">Milestone 5: pentest特化設定</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />monitor mode
+切替スクリプト (<code>pentest-config/quokka-monitor</code>)</label></li>
+<li><label><input type="checkbox" checked="" />NetworkManager の monitor
+I/F 除外 + MAC ランダム化設定</label></li>
+<li><label><input type="checkbox" checked="" />nftables ベースの VPN
+kill switch
+(<code>pentest-config/quokka-vpn-killswitch</code>)</label></li>
+<li><label><input type="checkbox" checked="" />proxychains4
+既定設定</label></li>
+<li><label><input type="checkbox" checked="" />OpenVPN 運用
+README</label></li>
+<li><label><input type="checkbox" checked="" />wordlists パッケージ採用
++ ビルド時 gunzip hook</label></li>
+<li><label><input type="checkbox" />実機 NIC / VPN での検証</label></li>
+</ul>
+<h2 id="milestone-6-vm配布パイプライン">Milestone 6:
+VM配布パイプライン</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" /><code>packer</code>
+テンプレート作成 (<code>vm-build/</code>)</label></li>
+<li><label><input type="checkbox" checked="" />無人インストール用
+preseed 作成</label></li>
+<li><label><input type="checkbox"
+checked="" />初回ログイン時のパスワード変更強制
+(<code>chage -d 0</code>)</label></li>
+<li><label><input type="checkbox" checked="" />SSH root直ログイン禁止
+drop-in 追加</label></li>
+<li><label><input type="checkbox" />実機での動作確認</label></li>
+</ul>
+<h2 id="milestone-7-リリースqa">Milestone 7: リリース・QA</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />workflow_dispatch での
+profile 選択</label></li>
+<li><label><input type="checkbox"
+checked="" />チェックサム生成</label></li>
+<li><label><input type="checkbox" checked="" />GPG署名ステップ (secrets
+未設定時は自動スキップ)</label></li>
+<li><label><input type="checkbox" checked="" />Live installer 用 preseed
+/ launcher 追加</label></li>
+<li><label><input type="checkbox" checked="" />Calamaresへの切り替え +
+Quokkaブランディング(色/ロゴ/スライドショー)
+(<code>docs/installer.md</code>)</label></li>
+<li><label><input
+type="checkbox" />インストーラ通し確認(Calamares・従来型 Debian
+Installer 双方とも未実施)</label></li>
+<li><label><input
+type="checkbox" />署名付き成果物の実ダウンロード確認</label></li>
+<li><label><input type="checkbox" checked="" />ドキュメントサイト
+(<code>docs/site/</code>、静的HTML・ブランドカラー適用済み)</label></li>
+</ul>
+<h2 id="見つかった不具合の修正">見つかった不具合の修正</h2>
+<ul>
+<li>ビルドフック(<code>live-build/config/hooks/normal/*.hook.chroot</code>)3本すべてに
+実行権限が付いていなかった。live-buildはchroot内で直接実行するため、
++xがないと <code>lb build</code>
+時にhookが機能しない(=GRUBテーマ適用やwordlists展開が
+実は一度も走っていなかった可能性がある)。→ 修正済み</li>
+<li><code>/usr/local/bin/quokka-monitor</code>
+<code>quokka-vpn-killswitch</code> <code>quokkafetch</code> にも
+実行権限が付いていなかった。特に <code>quokkafetch</code> は
+<code>/etc/profile.d/quokka-fetch.sh</code> 側で
+<code>[ -x /usr/local/bin/quokkafetch ]</code> を
+チェックしているため、このままではログイン時に一度も表示されない状態だった。→
+修正済み</li>
+</ul>
+<h2 id="現状のまとめ">現状のまとめ</h2>
+<p>設定・ブランディング・自動化(GitHub
+Actions)まわりはこのサンドボックス内で
+用意できる範囲では完成している。残るチェック項目(✅未満のもの)は、
+<strong>すべて実機またはネットワーク接続のあるビルド環境が必要</strong>という共通点がある:</p>
+<ul>
+<li>実際の <code>lb build</code> によるISO生成とその起動確認</li>
+<li>VM/実機でのGUI・ネットワーク・VPNの動作確認</li>
+<li>GitHub ActionsでのGPG署名フローの実地確認（secrets設定後）</li>
+</ul>
+<p>これらはコード変更で解決するものではなく、"動かして確認する"フェーズなので、
+<code>.github/workflows/build.yml</code> を push するか
+<code>workflow_dispatch</code> で手動実行し、
+成果物のISOをVirtualBox/QEMUや実機USBで検証するのが次のアクション。</p>
+<h2 id="milestone-8-kali相当の機能追加">Milestone 8:
+Kali相当の機能追加</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" /><code>kali-menu</code>
+パッケージ導入(攻撃フェーズ別カテゴリメニュー。自前実装よりKali本家のものを利用)</label></li>
+<li><label><input type="checkbox" checked="" />Quokka
+Undercover(外見偽装トグル。<code>quokka-undercover</code> +
+デスクトップランチャー) — 一次実装は汎用テーマへの切り替えのみで、Kali
+Undercoverほどの Windows風UI再現はしていない</label></li>
+<li><label><input type="checkbox" />Forensic mode 起動メニュー項目 —
+機能自体(<code>noautomount noswap</code> 起動パラメータ)は
+live-boot標準機能なので手動指定すれば動くはずだが、専用のGRUBメニュー項目化は
+live-buildのbootloaderテンプレート上書きが必要で、検証環境がないと書き換えを
+誤ると起動不能になるリスクがあるため見送っている</label></li>
+<li><label><input type="checkbox" />カスタムカーネル(無線注入パッチ等)—
+対象外。Kali本家も専属チームでカーネルを
+個別ビルドしており、このプロジェクトの規模では現実的でない</label></li>
+<li><label><input type="checkbox" />ARM/Raspberry Pi
+イメージ、NetHunter(Android版)、クラウドイメージ(AWS/Azure/GCP)、 Kali
+Purple(防御版)相当のもの — 対象外。いずれも別プラットフォーム向けの
+独立したビルドパイプラインが必要で、"設定ファイルを足す"レベルの作業ではない</label></li>
+</ul>
+<h2
+id="milestone-9-初回起動体験サポート機能kaliの感動できる部分への対応">Milestone
+9: 初回起動体験・サポート機能(Kaliの"感動できる"部分への対応)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" /><code>quokka-welcome</code> —
+初回ログイン時に一度だけ出るウェルカムダイアログ
+(zenity製。ドキュメントサイト/各機能への入り口をまとめた)</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>quokka-tweaks</code> —
+Kaliの<code>kali-tweaks</code>に相当する設定ハブ
+(プロファイル表示・Undercoverトグル・無線IF一覧・VPN状態・壁紙リセット)</label></li>
+<li><label><input type="checkbox"
+checked="" />ドキュメントサイト(<code>docs/site/</code>)をISO内
+<code>/usr/share/doc/quokka-os/site/</code> に同梱し、
+quokka-welcomeから直接開けるようにした</label></li>
+<li><label><input type="checkbox" />正直な制約: 本家
+<code>kali-tweaks</code> はPython/newt製の本格的なTUIアプリ、
+Kaliのオンボーディングも公式ドキュメントサイト(Kali Docs)という巨大な
+裏付けがある。今回作った2本はzenityベースの軽量ダイアログであり、
+同水準の作り込みではない。実機起動での見た目・動作は未確認</label></li>
+</ul>
+
+</main>
+</body>
+</html>

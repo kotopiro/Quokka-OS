@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desktop Environment — Quokka OS Docs</title>
+<style>
+  :root {
+    --quokka-bg: #000410;
+    --quokka-bg-elevated: #0A0F1E;
+    --quokka-bg-elevated-2: #111A2E;
+    --quokka-cyan: #00CFFE;
+    --quokka-cyan-dim: #0088AF;
+    --quokka-cyan-glow: #7BEFFF;
+    --quokka-text: #E8FBFF;
+    --quokka-text-muted: #5C7A8A;
+    --quokka-critical: #FF3B5C;
+    --quokka-warning: #FFB020;
+    --quokka-success: #39FF88;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--quokka-bg);
+    color: var(--quokka-text);
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, Menlo, Consolas, monospace;
+    display: flex;
+    min-height: 100vh;
+  }
+  nav {
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--quokka-bg-elevated);
+    border-right: 1px solid var(--quokka-cyan-dim);
+    padding: 24px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  nav .brand {
+    padding: 0 20px 20px 20px;
+    border-bottom: 1px solid var(--quokka-bg-elevated-2);
+    margin-bottom: 12px;
+  }
+  nav .brand a {
+    color: var(--quokka-cyan);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.15em;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 8px rgba(0,207,254,0.5);
+  }
+  nav .brand .tagline {
+    display: block;
+    color: var(--quokka-text-muted);
+    font-size: 0.72em;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+  nav ul { list-style: none; margin: 0; padding: 0; }
+  nav li a {
+    display: block;
+    padding: 9px 20px;
+    color: var(--quokka-text-muted);
+    text-decoration: none;
+    font-size: 0.92em;
+    border-left: 3px solid transparent;
+    transition: all 0.15s ease;
+  }
+  nav li a:hover {
+    color: var(--quokka-text);
+    background: var(--quokka-bg-elevated-2);
+  }
+  nav li a.active {
+    color: var(--quokka-cyan);
+    border-left: 3px solid var(--quokka-cyan);
+    background: var(--quokka-bg-elevated-2);
+    text-shadow: 0 0 6px rgba(0,207,254,0.4);
+  }
+  main {
+    flex: 1;
+    max-width: 900px;
+    padding: 48px 56px 96px 56px;
+  }
+  h1, h2, h3, h4 {
+    color: var(--quokka-cyan);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  h1 {
+    font-size: 1.9em;
+    border-bottom: 1px solid var(--quokka-cyan-dim);
+    padding-bottom: 12px;
+    margin-top: 0;
+    text-shadow: 0 0 10px rgba(0,207,254,0.35);
+  }
+  h2 { font-size: 1.35em; margin-top: 2.2em; }
+  h3 { font-size: 1.1em; color: var(--quokka-cyan-glow); }
+  a { color: var(--quokka-cyan); }
+  p, li { line-height: 1.75; color: var(--quokka-text); font-size: 0.95em; }
+  code {
+    background: var(--quokka-bg-elevated-2);
+    color: var(--quokka-cyan-glow);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  pre {
+    background: var(--quokka-bg-elevated);
+    border: 1px solid var(--quokka-bg-elevated-2);
+    border-left: 3px solid var(--quokka-cyan-dim);
+    padding: 16px 20px;
+    overflow-x: auto;
+    border-radius: 4px;
+  }
+  pre code { background: none; padding: 0; color: var(--quokka-text); }
+  table { border-collapse: collapse; width: 100%; margin: 1.2em 0; }
+  th, td {
+    border: 1px solid var(--quokka-bg-elevated-2);
+    padding: 8px 14px;
+    text-align: left;
+    font-size: 0.9em;
+  }
+  th { color: var(--quokka-cyan); background: var(--quokka-bg-elevated); }
+  tr:nth-child(even) { background: var(--quokka-bg-elevated); }
+  blockquote {
+    border-left: 3px solid var(--quokka-warning);
+    margin: 1em 0;
+    padding: 4px 18px;
+    color: var(--quokka-text-muted);
+  }
+  hr { border: none; border-top: 1px solid var(--quokka-bg-elevated-2); margin: 2.5em 0; }
+  ul.task-list { list-style: none; padding-left: 0.4em; }
+  ul.task-list li { margin: 4px 0; }
+  footer {
+    max-width: 900px;
+    color: var(--quokka-text-muted);
+    font-size: 0.78em;
+    padding: 0 56px 40px 56px;
+    margin-top: -40px;
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">
+    <a href="index.html">QUOKKA OS</a>
+    <span class="tagline">pentest distro docs</span>
+  </div>
+  <ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="roadmap.html">Roadmap</a></li>
+<li><a href="distro-decision.html">Distro Decision</a></li>
+<li><a href="tool-selection.html">Tool Selection</a></li>
+<li><a href="desktop-environment.html" class="active">Desktop Environment</a></li>
+<li><a href="installer.html">Installer</a></li>
+<li><a href="palette.html">Brand Palette</a></li>
+<li><a href="pentest-config.html">Pentest Config</a></li>
+<li><a href="openvpn.html">OpenVPN</a></li>
+<li><a href="live-build.html">Live Build (ISO)</a></li>
+<li><a href="vm-build.html">VM Build</a></li>
+  </ul>
+</nav>
+<main>
+<h1 id="デスクトップ環境の決定">デスクトップ環境の決定</h1>
+<h2 id="結論-xfce">結論: <strong>XFCE</strong></h2>
+<h2 id="理由">理由</h2>
+<table>
+<thead>
+<tr class="header">
+<th>観点</th>
+<th>XFCE</th>
+<th>他候補との比較</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>軽量性</td>
+<td>Live USB起動・低スペックVMでも動く</td>
+<td>KDEは重め、GNOMEはリソース消費が大きい</td>
+</tr>
+<tr class="even">
+<td>Kali/Parrot標準</td>
+<td>両方ともXFCEが標準DE</td>
+<td>ユーザーの移行コストが最小</td>
+</tr>
+<tr class="odd">
+<td>テーマ適用の柔軟性</td>
+<td>GTKテーマで細かくカスタム可能、パネル構成も自由</td>
+<td>GNOMEはカスタマイズに拡張機能依存で壊れやすい</td>
+</tr>
+<tr class="even">
+<td>pentestツールとの親和性</td>
+<td>ターミナル多用のワークフローとの相性が良い、パネルにターミナル/ツールランチャーを並べやすい</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="適用方針">適用方針</h2>
+<ul>
+<li><code>package-lists/quokka.list.chroot</code> で
+<code>task-xfce-desktop</code> を導入</li>
+<li>GTKテーマは <code>Quokka-Dark</code> を維持</li>
+<li>xfwm4 のウィンドウ枠は自作せず <strong>Arc-Dark</strong> を採用</li>
+<li>既定パネルは <strong>上部シングルパネル</strong> にする</li>
+</ul>
+<h2 id="milestone-4-実装内容-brandingdesktop">Milestone 4 実装内容
+(<code>branding/desktop/</code>)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>資産</th>
+<th>内容</th>
+<th>配置先</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>quokka-dark-gtk/</code></td>
+<td>GTK3テーマ <code>Quokka-Dark</code></td>
+<td><code>/usr/share/themes/Quokka-Dark/</code></td>
+</tr>
+<tr class="even">
+<td><code>xfce4-terminal/quokka.theme</code></td>
+<td>ターミナル配色スキーム</td>
+<td><code>/usr/share/xfce4/terminal/colorschemes/</code></td>
+</tr>
+<tr class="odd">
+<td><code>xfce4-terminal/terminalrc</code></td>
+<td>既定ターミナル設定</td>
+<td><code>/etc/xdg/xfce4/terminal/</code></td>
+</tr>
+<tr class="even">
+<td><code>quokkafetch/</code></td>
+<td>自作システム情報バナー</td>
+<td><code>/usr/local/bin/</code> + <code>/etc/profile.d/</code></td>
+</tr>
+<tr class="odd">
+<td><code>lightdm/</code></td>
+<td>ログイン画面テーマ</td>
+<td><code>/etc/lightdm/</code></td>
+</tr>
+<tr class="even">
+<td><code>xfce4-defaults/xsettings.xml</code></td>
+<td>GTK/アイコン/フォントの既定</td>
+<td><code>/etc/skel/.config/xfce4/xfconf/...</code></td>
+</tr>
+<tr class="odd">
+<td><code>xfce4-defaults/xfwm4.xml</code></td>
+<td>Arc-Dark を使う xfwm4 既定値</td>
+<td><code>/etc/skel/.config/xfce4/xfconf/...</code></td>
+</tr>
+<tr class="even">
+<td><code>xfce4-defaults/xfce4-panel.xml</code></td>
+<td>上部シングルパネルの xfconf</td>
+<td><code>/etc/skel/.config/xfce4/xfconf/...</code></td>
+</tr>
+<tr class="odd">
+<td><code>xfce4-panel/</code></td>
+<td>ランチャー/時計/セパレータ設定</td>
+<td><code>/etc/skel/.config/xfce4/panel/</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="未検証事項">未検証事項</h2>
+<ul>
+<li><code>arc-theme</code> の xfwm4 見た目は実機/X11 環境で要確認</li>
+<li>パネル plugin ID / 初回ログイン時レイアウト復元は XFCE
+実機で要確認</li>
+<li><code>papirus-icon-theme</code> の availability
+はネットワーク環境で要確認</li>
+</ul>
+
+</main>
+</body>
+</html>

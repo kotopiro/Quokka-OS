@@ -5,7 +5,7 @@ Kali Linux / Parrot OS 系譜の「ホワイトハッカー御用達」を目指
 
 - ベース: **Debian (bookworm)** + Kaliリポジトリのオーバーレイ (`docs/distro-decision.md`)
 - デスクトップ: **XFCE + LightDM** (`docs/desktop-environment.md`)
-- インストーラ: **Debian Live Installer + GUI launcher** (`docs/installer.md`)
+- インストーラ: **Calamares(メイン、ブランド適用済み)+ 従来型Debian Installer(上級者向け)** (`docs/installer.md`)
 - ツール構成: Kaliの`kali-tools-*`をQuokka独自カテゴリ名でラップ (`docs/tool-selection.md`)
 - 配布形態: ISO (`live-build/`) + VM (`vm-build/`、VirtualBox/.ova・QEMU/.qcow2)
 - ビルドプロファイル: `QUOKKA_PROFILE=standard|full`
@@ -49,6 +49,12 @@ quokka-os/
 - VM preseed に初回ログイン時パスワード変更強制と SSH root 直ログイン禁止を追加
 - GitHub Actions に profile 選択 + GPG 署名(秘密情報未設定時は自動スキップ)を追加
 - Live installer 用 preseed / GUI ランチャー / デスクトップショートカットを追加
+- インストーラをCalamares主導線に切り替え、Quokkaブランド(色/ロゴ/スライドショー)を適用(`docs/installer.md`)
+- `kali-menu`(攻撃フェーズ別カテゴリメニュー)と `quokka-undercover`(外見偽装トグル)を追加
+- `quokka-welcome`(初回ログイン時のウェルカムダイアログ)と `quokka-tweaks`(設定ハブ、kali-tweaks相当)を追加、ドキュメントサイトをISO内に同梱
+- ビルド時フックとインストールされるスクリプト(`quokka-monitor`/`quokka-vpn-killswitch`/`quokkafetch`/branding hook群)に
+  実行権限が付いていなかった不具合を修正(付いていないと `lb build` 時にhookが実行されない、
+  または `[ -x ... ]` チェックでquokkafetchが起動しないなど、静かに機能しない状態だった)
 
 ## 重要な未検証項目
 このサンドボックスでは以下を実行検証できません。実機または CI で確認してください。
@@ -59,6 +65,11 @@ quokka-os/
 4. `quokka-monitor` と `quokka-vpn-killswitch` の実機 NIC / VPN での動作確認
 5. ライブセッションからのインストーラ起動と、インストール完了後の初回ログイン時パスワード変更確認
 6. GitHub Actions で secrets 設定済み/未設定時それぞれの署名フロー確認
+
+## ドキュメントサイト
+
+`docs/site/index.html` をブラウザで開くとブランドカラー適用済みの
+静的ドキュメントサイト(全README/docsをまとめたもの)を閲覧できる。
 
 ## クイックスタート
 
