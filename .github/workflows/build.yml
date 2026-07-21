@@ -73,16 +73,19 @@ jobs:
           sudo rm -rf .build/ cache/ config/bootstrap config/chroot config/binary config/source config/stage config/rootfs
           sudo rm -rf ../.build/ ../cache/
 
-      - name: lb build
+           - name: lb build
         working-directory: live-build
         shell: bash
         run: |
-          # ビルド直前にもう一度生存確認して徹底削除
-          sudo rm -rf .build cache config/bootstrap
+          # 1. 物理キャッシュと不正な設定ファイルを根絶
+          sudo rm -rf .build cache config/bootstrap config/chroot config/binary config/rootfs
           sudo rm -f *.iso *.sha256 *.asc *.log
           
-          # 新鮮な状態で設定を再生成させてからビルドを実行
-          sudo lb config
+          # 2. auto/config に実行権限を与え、直接実行して設定を強制固定する
+          chmod +x auto/config
+          sudo --preserve-env=QUOKKA_PROFILE ./auto/config
+          
+          # 3. ビルドを実行
           sudo --preserve-env=QUOKKA_PROFILE lb build 2>&1 | tee build.log
           
           if [ ! -f *.iso ]; then
