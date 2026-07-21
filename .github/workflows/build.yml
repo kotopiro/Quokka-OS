@@ -64,19 +64,32 @@ jobs:
           cp /usr/share/keyrings/kali-archive-keyring.gpg live-build/config/archives/kali.key.chroot
           cp /usr/share/keyrings/kali-archive-keyring.gpg live-build/config/archives/kali.key.binary
 
-      - name: lb build
+      -      - name: lb build
         working-directory: live-build
         shell: bash
         run: |
-          # 1. 物理キャッシュと不正な設定ファイルを根絶
+          # 1. 過去の設定や不正なキャッシュディレクトリのみを個別に物理削除
+          # (auto フォルダ自体を巻き添えで消さないように安全なターゲットのみ指定)
           sudo rm -rf .build cache config/bootstrap config/chroot config/binary config/rootfs
           sudo rm -f *.iso *.sha256 *.asc *.log
           
-          # 2. auto/config に実行権限を与え、直接実行して設定を強制固定する
-          chmod +x auto/config
-          sudo --preserve-env=QUOKKA_PROFILE ./auto/config
+          # 2. 正確な auto/config のパスを大文字小文字を無視して自動追跡
+          CONFIG_PATH=$(find . -iname "config" | grep -i "auto/config" | head -n 1 || true)
           
-          # 3. ビルドを実行
+          if [ -z "$CONFIG_PATH" ]; then
+            echo "Error: auto/config file was not found in $(pwd)"
+            echo "=== Directory Contents ==="
+            ls -la
+            exit 1
+          fi
+          
+          echo "Found auto/config at: $CONFIG_PATH"
+          
+          # 3. 実行権限を強制付与して設定を確定させる
+          chmod +x "$CONFIG_PATH"
+          sudo --preserve-env=QUOKKA_PROFILE "$CONFIG_PATH"
+          
+          # 4. ビルドを実行
           sudo --preserve-env=QUOKKA_PROFILE lb build 2>&1 | tee build.log
           
           if [ ! -f *.iso ]; then
