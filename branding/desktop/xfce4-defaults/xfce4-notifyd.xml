@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Quokka OS default xfce4-notifyd settings.
+
+  正直な制約: 通知の表示位置(notify-location)はxfconfの数値enumで指定するが、
+  実例を調べた限りバージョン/ディストロによって値の意味が揺れており
+  (パネル位置のp=値と同様の問題)、誤った値を指定すると意図しない角に
+  表示される可能性がある。ここではその値は指定せず、xfce4-notifyd自身の
+  既定値に委ねている。通知の見た目(テーマ)はGTKテーマ(Qogir-Dark)を
+  自動的に継承するため、themeプロパティも明示的には指定していない。
+-->
+<channel name="xfce4-notifyd" version="1.0">
+  <property name="expire-timeout" type="int" value="10"/>
+  <property name="do-not-disturb" type="bool" value="false"/>
+  <property name="do-slideout" type="bool" value="true"/>
+</channel>

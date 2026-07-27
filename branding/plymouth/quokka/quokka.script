@@ -35,7 +35,7 @@ fun draw_progress(percent)
     if (fill_width < 2) fill_width = 2;
 
     fill_image = Image(fill_width, bar_height);
-    fill_image.Fill(0, 0.812, 0.996, 1);      // #00CFFE
+    fill_image.Fill(0.298, 0.553, 1, 1);      // #4C8DFF (restrained accent)
     global.fill_sprite = Sprite(fill_image);
     fill_sprite.SetPosition(bar_x, bar_y, 11);
 }

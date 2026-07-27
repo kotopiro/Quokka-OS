@@ -8,5 +8,5 @@ Encoding=UTF-8
 GtkTheme=Quokka-Dark
 MetacityTheme=Quokka-Dark
 IconTheme=Papirus-Dark
-CursorTheme=Adwaita
+CursorTheme=Quokka-Cyan
 ButtonLayout=close,minimize,maximize:menu
