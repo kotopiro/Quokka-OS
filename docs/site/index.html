@@ -10,6 +10,7 @@
     --quokka-bg-elevated: #0A0F1E;
     --quokka-bg-elevated-2: #111A2E;
     --quokka-cyan: #00CFFE;
+    --quokka-blue: #4C8DFF;
     --quokka-cyan-dim: #0088AF;
     --quokka-cyan-glow: #7BEFFF;
     --quokka-text: #E8FBFF;
@@ -23,7 +24,7 @@
     margin: 0;
     background: var(--quokka-bg);
     color: var(--quokka-text);
-    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, Menlo, Consolas, monospace;
+    font-family: 'Noto Sans CJK JP', 'Inter', -apple-system, sans-serif;
     display: flex;
     min-height: 100vh;
   }
@@ -44,12 +45,12 @@
     margin-bottom: 12px;
   }
   nav .brand a {
-    color: var(--quokka-cyan);
+    color: var(--quokka-blue);
     text-decoration: none;
     font-weight: bold;
     font-size: 1.15em;
     letter-spacing: 0.5px;
-    text-shadow: 0 0 8px rgba(0,207,254,0.5);
+    
   }
   nav .brand .tagline {
     display: block;
@@ -73,10 +74,10 @@
     background: var(--quokka-bg-elevated-2);
   }
   nav li a.active {
-    color: var(--quokka-cyan);
-    border-left: 3px solid var(--quokka-cyan);
+    color: var(--quokka-blue);
+    border-left: 3px solid var(--quokka-blue);
     background: var(--quokka-bg-elevated-2);
-    text-shadow: 0 0 6px rgba(0,207,254,0.4);
+    
   }
   main {
     flex: 1;
@@ -84,7 +85,7 @@
     padding: 48px 56px 96px 56px;
   }
   h1, h2, h3, h4 {
-    color: var(--quokka-cyan);
+    color: var(--quokka-blue);
     font-weight: 600;
     line-height: 1.3;
   }
@@ -93,11 +94,10 @@
     border-bottom: 1px solid var(--quokka-cyan-dim);
     padding-bottom: 12px;
     margin-top: 0;
-    text-shadow: 0 0 10px rgba(0,207,254,0.35);
   }
   h2 { font-size: 1.35em; margin-top: 2.2em; }
   h3 { font-size: 1.1em; color: var(--quokka-cyan-glow); }
-  a { color: var(--quokka-cyan); }
+  a { color: var(--quokka-blue); }
   p, li { line-height: 1.75; color: var(--quokka-text); font-size: 0.95em; }
   code {
     background: var(--quokka-bg-elevated-2);
@@ -122,7 +122,7 @@
     text-align: left;
     font-size: 0.9em;
   }
-  th { color: var(--quokka-cyan); background: var(--quokka-bg-elevated); }
+  th { color: var(--quokka-blue); background: var(--quokka-bg-elevated); }
   tr:nth-child(even) { background: var(--quokka-bg-elevated); }
   blockquote {
     border-left: 3px solid var(--quokka-warning);
@@ -169,29 +169,51 @@ Linux / Parrot OS 系譜の「ホワイトハッカー御用達」を目指す�
 <ul>
 <li>ベース: <strong>Debian (bookworm)</strong> +
 Kaliリポジトリのオーバーレイ (<code>docs/distro-decision.md</code>)</li>
-<li>デスクトップ: <strong>XFCE + LightDM</strong>
+<li>デスクトップ: <strong>XFCE + LightDM</strong>、GTK/xfwm4/アイコンは
+<a href="https://github.com/vinceliuice/Qogir-theme">Qogir-theme</a>(GPL-3.0)採用
 (<code>docs/desktop-environment.md</code>)</li>
 <li>インストーラ: <strong>Calamares(メイン、ブランド適用済み)+
 従来型Debian Installer(上級者向け)</strong>
 (<code>docs/installer.md</code>)</li>
-<li>ツール構成:
-Kaliの<code>kali-tools-*</code>をQuokka独自カテゴリ名でラップ
-(<code>docs/tool-selection.md</code>)</li>
+<li>ツール構成: Kaliの<code>kali-tools-*</code>を網羅的に採用
+(exploitation/wireless/forensics/reverse-engineering/NIST CSF系5カテゴリ等、
+主要カテゴリはほぼ全て導入済み。<code>docs/tool-selection.md</code>)</li>
 <li>配布形態: ISO (<code>live-build/</code>) + VM
 (<code>vm-build/</code>、VirtualBox/.ova・QEMU/.qcow2)</li>
 <li>ビルドプロファイル: <code>QUOKKA_PROFILE=standard|full</code></li>
+</ul>
+<h2 id="quokka独自ツール">Quokka独自ツール</h2>
+<ul>
+<li><strong>Quokka Fire</strong>(<code>quokka-fire</code> /
+<code>quokka-fire-gui</code>) — システム全体をTor経由に強制ルーティング
+(Parrot OSのAnonSurf相当)。GTK3の専用GUI・パネルインジケータ付き</li>
+<li><strong>Quokka Report</strong>(<code>quokka-report</code>) —
+独自のペンテストレポート生成ツール(pandocでMarkdown→ブランド調HTML)</li>
+<li><strong>quokka-vpn-killswitch</strong> — nftablesベースのVPNキルスイッチ</li>
+<li><strong>quokka-tweaks</strong> — 設定ハブ(壁紙・効果音・USBGuard設定・
+Timeshift/Synaptic/GUFW起動 等)</li>
+<li><strong>quokka-welcome</strong> / <strong>quokka-about</strong> —
+初回ログイン案内・ブランド情報パネル</li>
+<li>Thunar右クリックメニュー「Quokka Actions」(ハッシュ計算・evidence追加)</li>
+</ul>
+<h2 id="秘匿性os全体ハードニング">秘匿性・OS全体ハードニング</h2>
+<ul>
+<li>Proton VPN(公式アプリ)・Tor・カーネル/sysctlハードニング・fail2ban・
+AppArmor・auditd・USBGuard・自動セキュリティアップデート</li>
+<li>正直な制約: swap無効化・journald揮発化は通常業務への支障を避けるため見送り
+(詳細は<code>docs/roadmap.md</code> Milestone 10)</li>
 </ul>
 <h2 id="ディレクトリ構成">ディレクトリ構成</h2>
 <pre class="text"><code>quokka-os/
 ├── README.md
 ├── docs/
-│   ├── roadmap.md
-│   ├── distro-decision.md
-│   ├── tool-selection.md
-│   ├── desktop-environment.md
-│   └── installer.md
+│   ├── roadmap.md            # 全変更履歴(最新・最も詳しい)
+│   ├── persistence.md
+│   └── ...
 ├── branding/
-│   ├── palette/
+│   ├── palette/wallpapers/
+│   ├── cursor/                 # Quokka-Cyanカーソル
+│   ├── sound/                  # 効果音6種
 │   ├── plymouth/quokka/
 │   ├── grub/quokka/
 │   └── desktop/
@@ -199,56 +221,26 @@ Kaliの<code>kali-tools-*</code>をQuokka独自カテゴリ名でラップ
 ├── live-build/
 │   ├── auto/config             # profile 切替付き
 │   └── config/
-│       ├── package-lists/
-│       ├── archives/
+│       ├── package-lists/      # 40+ の分類済みリスト
 │       ├── includes.chroot/
-│       ├── includes.installer/
-│       └── hooks/normal/
-└── vm-build/
-    ├── variables.pkr.hcl
-    ├── build.pkr.hcl
-    └── http/preseed.cfg</code></pre>
-<h2 id="実装済み">実装済み</h2>
-<ul>
-<li><code>live-build/auto/config</code> に
-<code>QUOKKA_PROFILE=standard|full</code> 分岐を追加</li>
-<li>xfwm4 は <code>Arc-Dark</code> を既定化し、上部シングルパネルの
-xfconf を追加</li>
-<li><code>pentest-config/</code> を新設し、monitor mode / VPN kill
-switch / NetworkManager / proxychains4 / OpenVPN 運用メモを追加</li>
-<li><code>wordlists</code> パッケージ導入と、<code>rockyou.txt.gz</code>
-をビルド時展開する hook を追加</li>
-<li>VM preseed に初回ログイン時パスワード変更強制と SSH root
-直ログイン禁止を追加</li>
-<li>GitHub Actions に profile 選択 + GPG
-署名(秘密情報未設定時は自動スキップ)を追加</li>
-<li>Live installer 用 preseed / GUI ランチャー /
-デスクトップショートカットを追加</li>
-<li>インストーラをCalamares主導線に切り替え、Quokkaブランド(色/ロゴ/スライドショー)を適用(<code>docs/installer.md</code>)</li>
-<li><code>kali-menu</code>(攻撃フェーズ別カテゴリメニュー)と
-<code>quokka-undercover</code>(外見偽装トグル)を追加</li>
-<li><code>quokka-welcome</code>(初回ログイン時のウェルカムダイアログ)と
-<code>quokka-tweaks</code>(設定ハブ、kali-tweaks相当)を追加、ドキュメントサイトをISO内に同梱</li>
-<li>ビルド時フックとインストールされるスクリプト(<code>quokka-monitor</code>/<code>quokka-vpn-killswitch</code>/<code>quokkafetch</code>/branding
-hook群)に 実行権限が付いていなかった不具合を修正(付いていないと
-<code>lb build</code> 時にhookが実行されない、 または
-<code>[ -x ... ]</code>
-チェックでquokkafetchが起動しないなど、静かに機能しない状態だった)</li>
-</ul>
+│       └── hooks/normal/       # 0100〜0160番台
+└── vm-build/</code></pre>
+<h2 id="現在の状態">現在の状態</h2>
+<p>非常に多くの機能追加・修正を積み重ねてきており、この
+index.html
+では要約のみ記載している。<strong>正確な最新状況・各機能の「正直な制約」は
+必ず <a href="roadmap.html">roadmap.html</a>
+を参照すること</strong>(Milestone 1〜30、随時更新)。</p>
 <h2 id="重要な未検証項目">重要な未検証項目</h2>
-<p>このサンドボックスでは以下を実行検証できません。実機または CI
-で確認してください。</p>
+<p>このサンドボックスでは実際のXFCEセッション・実機起動を検証できません。
+特に以下は実機/CI確認が必須です(詳細はroadmap.md参照):</p>
 <ol type="1">
-<li><code>live-build/config/archives/kali.key.chroot</code>
-の取得を含む実 ISO ビルド</li>
-<li><code>QUOKKA_PROFILE=standard|full</code>
-の両プロファイルでのパッケージ差分確認</li>
-<li>XFCE パネル配置・Arc-Dark の見た目確認</li>
-<li><code>quokka-monitor</code> と <code>quokka-vpn-killswitch</code>
-の実機 NIC / VPN での動作確認</li>
-<li>ライブセッションからのインストーラ起動と、インストール完了後の初回ログイン時パスワード変更確認</li>
-<li>GitHub Actions で secrets
-設定済み/未設定時それぞれの署名フロー確認</li>
+<li>実ISOビルド(GitHub Actions経由)、両プロファイルでのパッケージ差分</li>
+<li>Qogirテーマ・カーソル・パネル位置(下部)の実際の見た目</li>
+<li><code>quokka-fire</code> / <code>quokka-monitor</code> /
+<code>quokka-vpn-killswitch</code> の実機ネットワークでの動作</li>
+<li>ディスク暗号化のデフォルト化、Forensic mode起動項目(いずれも未着手・backlog)</li>
+<li>fcitx5日本語入力・効果音パックの実機動作確認</li>
 </ol>
 <h2 id="ドキュメントサイト">ドキュメントサイト</h2>
 <p><code>docs/site/index.html</code>

@@ -10,6 +10,7 @@
     --quokka-bg-elevated: #0A0F1E;
     --quokka-bg-elevated-2: #111A2E;
     --quokka-cyan: #00CFFE;
+    --quokka-blue: #4C8DFF;
     --quokka-cyan-dim: #0088AF;
     --quokka-cyan-glow: #7BEFFF;
     --quokka-text: #E8FBFF;
@@ -23,7 +24,7 @@
     margin: 0;
     background: var(--quokka-bg);
     color: var(--quokka-text);
-    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, Menlo, Consolas, monospace;
+    font-family: 'Noto Sans CJK JP', 'Inter', -apple-system, sans-serif;
     display: flex;
     min-height: 100vh;
   }
@@ -44,12 +45,12 @@
     margin-bottom: 12px;
   }
   nav .brand a {
-    color: var(--quokka-cyan);
+    color: var(--quokka-blue);
     text-decoration: none;
     font-weight: bold;
     font-size: 1.15em;
     letter-spacing: 0.5px;
-    text-shadow: 0 0 8px rgba(0,207,254,0.5);
+    
   }
   nav .brand .tagline {
     display: block;
@@ -73,10 +74,10 @@
     background: var(--quokka-bg-elevated-2);
   }
   nav li a.active {
-    color: var(--quokka-cyan);
-    border-left: 3px solid var(--quokka-cyan);
+    color: var(--quokka-blue);
+    border-left: 3px solid var(--quokka-blue);
     background: var(--quokka-bg-elevated-2);
-    text-shadow: 0 0 6px rgba(0,207,254,0.4);
+    
   }
   main {
     flex: 1;
@@ -84,7 +85,7 @@
     padding: 48px 56px 96px 56px;
   }
   h1, h2, h3, h4 {
-    color: var(--quokka-cyan);
+    color: var(--quokka-blue);
     font-weight: 600;
     line-height: 1.3;
   }
@@ -93,11 +94,10 @@
     border-bottom: 1px solid var(--quokka-cyan-dim);
     padding-bottom: 12px;
     margin-top: 0;
-    text-shadow: 0 0 10px rgba(0,207,254,0.35);
   }
   h2 { font-size: 1.35em; margin-top: 2.2em; }
   h3 { font-size: 1.1em; color: var(--quokka-cyan-glow); }
-  a { color: var(--quokka-cyan); }
+  a { color: var(--quokka-blue); }
   p, li { line-height: 1.75; color: var(--quokka-text); font-size: 0.95em; }
   code {
     background: var(--quokka-bg-elevated-2);
@@ -122,7 +122,7 @@
     text-align: left;
     font-size: 0.9em;
   }
-  th { color: var(--quokka-cyan); background: var(--quokka-bg-elevated); }
+  th { color: var(--quokka-blue); background: var(--quokka-bg-elevated); }
   tr:nth-child(even) { background: var(--quokka-bg-elevated); }
   blockquote {
     border-left: 3px solid var(--quokka-warning);
@@ -163,8 +163,8 @@
   </ul>
 </nav>
 <main>
-<h1 id="quokka-os--ロードマップ">Quokka OS — ロードマップ</h1>
-<h2 id="milestone-1-ブランディング-">Milestone 1: ブランディング ✅</h2>
+<h1 id="quokka-os-ロードマップ">Quokka OS — ロードマップ</h1>
+<h2 id="milestone-1-ブランディング">Milestone 1: ブランディング ✅</h2>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />カラーパレット確定
 (<code>branding/palette/palette.md</code>)</label></li>
@@ -214,7 +214,7 @@ checked="" /><code>QUOKKA_PROFILE=standard|full</code> 分岐実装
 <li><label><input type="checkbox" />standard/full
 の両プロファイルで実ビルド確認</label></li>
 </ul>
-<h2 id="milestone-4-デスクトップ環境--uiテーマ">Milestone 4:
+<h2 id="milestone-4-デスクトップ環境-uiテーマ">Milestone 4:
 デスクトップ環境 &amp; UIテーマ</h2>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />DE選定
@@ -311,7 +311,7 @@ Actions)まわりはこのサンドボックス内で
 <li>VM/実機でのGUI・ネットワーク・VPNの動作確認</li>
 <li>GitHub ActionsでのGPG署名フローの実地確認（secrets設定後）</li>
 </ul>
-<p>これらはコード変更で解決するものではなく、"動かして確認する"フェーズなので、
+<p>これらはコード変更で解決するものではなく、“動かして確認する”フェーズなので、
 <code>.github/workflows/build.yml</code> を push するか
 <code>workflow_dispatch</code> で手動実行し、
 成果物のISOをVirtualBox/QEMUや実機USBで検証するのが次のアクション。</p>
@@ -335,11 +335,11 @@ live-buildのbootloaderテンプレート上書きが必要で、検証環境が
 <li><label><input type="checkbox" />ARM/Raspberry Pi
 イメージ、NetHunter(Android版)、クラウドイメージ(AWS/Azure/GCP)、 Kali
 Purple(防御版)相当のもの — 対象外。いずれも別プラットフォーム向けの
-独立したビルドパイプラインが必要で、"設定ファイルを足す"レベルの作業ではない</label></li>
+独立したビルドパイプラインが必要で、“設定ファイルを足す”レベルの作業ではない</label></li>
 </ul>
 <h2
 id="milestone-9-初回起動体験サポート機能kaliの感動できる部分への対応">Milestone
-9: 初回起動体験・サポート機能(Kaliの"感動できる"部分への対応)</h2>
+9: 初回起動体験・サポート機能(Kaliの”感動できる”部分への対応)</h2>
 <ul class="task-list">
 <li><label><input type="checkbox"
 checked="" /><code>quokka-welcome</code> —
@@ -359,7 +359,574 @@ Kaliのオンボーディングも公式ドキュメントサイト(Kali Docs)�
 裏付けがある。今回作った2本はzenityベースの軽量ダイアログであり、
 同水準の作り込みではない。実機起動での見た目・動作は未確認</label></li>
 </ul>
-
+<h2 id="milestone-10-osセキュリティハードニング">Milestone 10:
+OSセキュリティハードニング</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" />カーネル/sysctlハードニング
+(<code>live-build/config/includes.chroot/etc/sysctl.d/90-quokka-hardening.conf</code>)</label></li>
+<li><label><input type="checkbox"
+checked="" />SSHハードニング強化(既存の<code>PermitRootLogin no</code>に加え、認証試行回数制限・X11転送禁止等を追加。
+ペンテスト業務で使うTCPフォワーディング/トンネリングは塞いでいない)</label></li>
+<li><label><input type="checkbox"
+checked="" />fail2ban導入(sshdへのブルートフォース対策)</label></li>
+<li><label><input type="checkbox"
+checked="" />AppArmor導入・有効化</label></li>
+<li><label><input type="checkbox"
+checked="" />auditd導入・有効化</label></li>
+<li><label><input type="checkbox"
+checked="" />パスワード品質ポリシー(<code>libpam-pwquality</code>、最低10文字+英大小文字・数字混在)</label></li>
+<li><label><input type="checkbox"
+checked="" />セキュリティアップデートの自動適用(<code>unattended-upgrades</code>、securityリポジトリのみ対象)</label></li>
+<li><label><input type="checkbox" checked="" />USBGuard導入</label></li>
+<li><label><input type="checkbox" checked="" />正直な制約(解消):
+初回実機起動後に手動で<code>usbguard generate-policy</code>を実行する
+必要がある点について、<code>quokka-tweaks</code>に導線(「USBGuardに今のUSB機器構成を
+許可登録する」)を追加し、GUIから実行できるようにした</label></li>
+<li><label><input type="checkbox" />正直な制約:
+今回はswap無効化・journald揮発化(ログの非永続化)は見送った。
+機密データの残留リスクは下がるが、トラブルシューティングやクラッシュ時の
+データ保全という通常業務への支障が大きいと判断したため
+(別途「秘匿性最優先」の要件が出た場合は再検討)</label></li>
+<li><label><input
+type="checkbox" />実機での動作確認(fail2ban誤検知・AppArmor拒否ログの有無等)は未実施</label></li>
+<li><label><input
+type="checkbox" /><code>docs/site/roadmap.html</code>等のドキュメントサイトHTMLはこの変更に追随して
+いない(手動更新が必要)</label></li>
+</ul>
+<h2
+id="milestone-11-独自要素ブランド強化他osにない機能で差別化">Milestone
+11: 独自要素・ブランド強化(他OSにない機能で差別化)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" /><code>quokka-report</code> — Quokka
+OS独自のペンテストレポート生成ツール新規実装 (<code>init</code> /
+<code>add-finding</code> / <code>build</code> /
+<code>list</code>)。Kali/ParrotはDradis/Faraday等の
+外部重量級ツールに頼るのが一般的だが、pandocのみに依存する軽量な自前実装とした。
+<code>palette.md</code>のセマンティックカラー(Critical/Warning/Success)をそのまま
+深刻度バッジの色に流用し、生成後のHTMLレポート自体にもブランドが一貫する設計</label></li>
+<li><label><input type="checkbox" checked="" />Firefox
+ESRの起動ページをQuokka OSブランド調のカスタムページに変更
+(<code>policies.json</code> +
+<code>/usr/share/quokka-os/homepage/index.html</code>)。
+ドキュメントサイト・ツール一覧・ロードマップへの導線をブラウザ起動直後に提示</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>quokka-welcome</code>に<code>quokka-report</code>の案内項目を追加</label></li>
+<li><label><input type="checkbox" />正直な制約:
+<code>policies.json</code>の設置パス(<code>/etc/firefox-esr/policies.json</code>)は
+Debianパッケージの慣例に基づく想定であり、実機ビルドでの動作確認は未実施</label></li>
+<li><label><input type="checkbox" />正直な制約:
+<code>quokka-report</code>はMarkdown→HTML変換をpandocに依存しており、
+自前のMarkdownパーサは実装していない</label></li>
+<li><label><input type="checkbox" />未着手:
+カーソルテーマ・追加壁紙バリエーション・Thunarカスタムアクション
+(「Quokka
+Actions」右クリックメニュー)・ログイン/ログアウト時のサウンド等の
+視覚面の追加要素は今回のスコープでは着手していない</label></li>
+</ul>
+<h2
+id="milestone-12-視覚要素の追加カーソル右クリックアクションサウンド">Milestone
+12: 視覚要素の追加(カーソル・右クリックアクション・サウンド)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" />追加壁紙2種(<code>quokka-wallpaper-circuit-1920x1080.png</code>
+/ <code>-gradient-...png</code>)を生成し、
+<code>quokka-tweaks</code>から3種類を選択できるように変更</label></li>
+<li><label><input type="checkbox"
+checked="" />カーソルテーマ「Quokka-Cyan」—
+<code>left_ptr</code>(標準の矢印ポインタ)のみ独自デザインし、
+それ以外は<code>Inherits=Adwaita</code>で継承する一次実装。ビルド時に<code>xcursorgen</code>で
+コンパイルし、システム既定(<code>/usr/share/icons/default/index.theme</code>)に設定する
+フック(<code>0130-quokka-cursor.hook.chroot</code>)を追加</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />正直な制約:
+<code>xcursorgen</code>を提供するパッケージ名(<code>x11-apps</code>と仮定)はこの
+サンドボックス環境では確認できず、Debian
+bookwormでの実際のパッケージ名は要確認</label></li>
+<li><label><input
+type="checkbox" />実機でのカーソル表示・ホットスポット位置の確認は未実施</label></li>
+</ul></li>
+<li><label><input type="checkbox"
+checked="" />Thunar右クリックメニュー「Quokka
+Actions」3項目を追加(<code>etc/skel/.config/Thunar/uca.xml</code>)</label>
+<ul>
+<li>ここでターミナルを開く</li>
+<li>SHA256ハッシュを計算(<code>quokka-hash</code>)</li>
+<li>quokka-reportのevidenceに追加(<code>quokka-evidence-add</code>、<code>quokka-report add-evidence</code>新設)</li>
+</ul></li>
+<li><label><input type="checkbox"
+checked="" />ログインチャイム音を追加(<code>ffmpeg</code>のsine波で生成した独自の短い2音チャイム、
+<code>/etc/xdg/autostart/quokka-login-sound.desktop</code>でセッション開始時に再生)</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />正直な制約:
+実際の音質・音量バランスはこのサンドボックス内では聴覚確認できておらず未検証</label></li>
+<li><label><input type="checkbox" />ログアウト音は見送り:
+<code>xfce4-session</code>にはログアウト前フックの標準的な仕組みが無く、
+<code>xfce4-session-logout</code>バイナリのラップ等は将来のパッケージ更新で上書きされる・
+ログアウトフロー自体を壊すリスクがあり、無理に実装しないほうが安全と判断</label></li>
+</ul></li>
+</ul>
+<h2
+id="milestone-13-uiの独自性強化アプリケーションメニュー統合">Milestone
+13: UIの独自性強化(アプリケーションメニュー統合)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" /><code>index.theme</code>のCursorThemeが古い<code>Adwaita</code>参照のままだったのを<code>Quokka-Cyan</code>に修正
+(branding/desktop側・live-build側の両方)</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>quokka-welcome</code> /
+<code>quokka-report</code>にアプリケーションランチャー(.desktop)を追加し、
+アプリケーションメニューから起動可能に(<code>quokka-tweaks</code>/<code>quokka-undercover</code>は既存)</label></li>
+<li><label><input type="checkbox" />未着手・検討中:
+xfwm4のウィンドウ装飾(タイトルバー・ボーダー)は現状<code>Arc-Dark</code>
+(サードパーティ)のまま。Quokka独自にするには本格的なピクスマップ作成が必要で、
+GTKテーマと同じ「既存テーマを配色だけ上書きする」方式を取るにしても、
+Arc-Darkの実アセットがこのビルド環境(サンドボックス)には存在せず、
+実際のXFCEセッションでの表示確認もできないため、壊れた見た目で出荷するリスクを
+避けて今回は見送り。次にPCが直った際に実機で試すのが安全</label></li>
+<li><label><input type="checkbox" />未着手:
+quokka-report等それぞれに専用の個別アイコン(現状は共通ロゴを流用)</label></li>
+</ul>
+<h2 id="milestone-14-見た目の方針転換qogirテーマ採用">Milestone 14:
+見た目の方針転換(Qogirテーマ採用)</h2>
+<ul>
+<li>ユーザーから「(シアン発光ハッカー風の)今の見た目はださい。FreeBSD/Linux
+Mint/Zorin OSの
+ような見た目にしたい。GitHub等の既存リソースも活用してほしい」というフィードバックを受け、
+自作CSSの「Quokka-Dark」テーマ運用を終了し、[vinceliuice/Qogir-theme]
+(https://github.com/vinceliuice/Qogir-theme, GPL-3.0, 1.7k+ stars,
+XFCE公式対応) に切り替え</li>
+<li><label><input type="checkbox"
+checked="" /><code>0140-quokka-qogir-theme.hook.chroot</code>を新設。ビルド時にGitHubから
+Qogir-theme(GTK+xfwm4、<code>--tweaks round</code>で角丸ウィンドウ)と
+Qogir-icon-theme(アイコン)を取得してインストール</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>xsettings.xml</code>(GTKテーマ・アイコンテーマ)・<code>xfwm4.xml</code>(ウィンドウ装飾)を
+Qogir-Darkに変更。これにより長らく未解決だった「タイトルバーがArc-Darkのまま」
+問題も解消される見込み</label></li>
+<li><label><input type="checkbox"
+checked="" />カーソルのみ独自の<code>Quokka-Cyan</code>を維持(色の主張はカーソル1点に絞り、
+全体は落ち着いたトーンにする方向性)</label></li>
+<li><label><input type="checkbox"
+checked="" />壁紙の既定設定が実は未配線(スタブ実装)だったバグを発見・修正
+(<code>xfce4-desktop.xml</code>を新設)</label></li>
+<li><label><input type="checkbox"
+checked="" />基本パッケージリストから<code>arc-theme</code>/<code>papirus-icon-theme</code>を削除
+(Qogir導入失敗時のみフック内でPapirus-Darkにフォールバック)</label></li>
+<li><label><input type="checkbox" />正直な制約:
+このサンドボックス環境ではXFCEセッションを実際に起動できず、
+見た目の最終確認ができていない。install.shがXFCE向けにxfwm4フォルダを
+自動生成する前提で進めているが、vinceliuice系テーマ共通の既知の挙動を
+根拠にした未検証の想定</label></li>
+<li><label><input type="checkbox" />正直な制約:
+Qogirの配色バリエーションは default(青)/manjaro(緑)/ubuntu(橙)の
+3種のみで、Quokka独自のシアン(#00CFFE)に完全一致する配色は無い。
+今回はdefault(青)を採用。Zorin
+OSの既定も青系のため方向性としては近いが、
+「らしさ」としてのシアンはカーソルと壁紙・ロゴのみに残る形になる</label></li>
+<li><label><input type="checkbox" />未着手:
+パネル(タスクバー)の配置は現状Kali/Parrot的な上部パネルのまま。
+Zorin/Mintのような下部パネル+中央寄せレイアウトへの変更は別途方針確認が必要</label></li>
+<li><label><input
+type="checkbox" />実施済みの<code>quokka-dark-gtk</code>(自作CSSテーマ)は削除せず残置(将来的な
+アクセントカラー調整用の参考資料として)</label></li>
+</ul>
+<h2 id="milestone-15-パネルを下部に変更mintスタイル">Milestone 15:
+パネルを下部に変更(Mintスタイル)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" />ユーザー確認の上、パネル位置を上部から下部に変更
+(<code>position</code>プロパティを<code>p=6</code>→<code>p=12</code>に変更。span-monitors=true・length=100%は維持し
+画面解像度に依存しない全幅パネルとした)</label></li>
+<li><label><input type="checkbox"
+checked="" />プラグイン順序(メニュー→ランチャー→タスクリスト→…→時計→アクション)は
+そのまま維持。これはLinux
+Mint(Cinnamon)の下部パネルと同じ並び方</label></li>
+<li><label><input type="checkbox" />正直な制約:
+<code>position</code>の<code>p=</code>値(ゲート位置を示す数値)はXFCEのバージョンや
+情報源によって記載が一致しないことがあり(複数のフォーラム情報で<code>p=10</code>〜<code>p=12</code>と
+揺れがあった)、<code>p=12</code>は「フル幅の下部パネルで動作したという実例」を根拠にした
+best-effort。実機でパネルが画面外に出る等の不具合があれば、この値の再調整が必要</label></li>
+<li><label><input type="checkbox" />Zorin
+OS本来の「中央に寄った浮遊ドック」スタイルは、画面解像度を前提にした
+固定x座標が必要になり解像度非依存にできないため見送り、Mint的な全幅下部パネルを採用</label></li>
+</ul>
+<h2
+id="milestone-16-calamaresインストーラーの配色をqogir方針に合わせて調整">Milestone
+16: Calamaresインストーラーの配色をQogir方針に合わせて調整</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" /><code>branding.desc</code>の<code>sidebarTextSelect</code>/<code>sidebarTextCurrent</code>をシアン(<code>#00CFFE</code>)から
+新方針の青(<code>#4C8DFF</code>、Qogir
+default系)に変更。サイドバー背景・ロゴは従来通り
+(シアンはロゴマークのみに残す)</label></li>
+<li><label><input
+type="checkbox" />実機・実際のCalamares起動画面での確認は未実施(このサンドボックスでは検証不可、
+branding.desc冒頭のコメントに記載済みの制約と同じ)</label></li>
+</ul>
+<h2 id="milestone-17-grubplymouthの配色もqogir方針に統一">Milestone 17:
+GRUB/Plymouthの配色もQogir方針に統一</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" />GRUBテーマ(<code>theme.txt</code>)のタイトル・選択項目・プログレスバー色をシアンから
+青(<code>#4C8DFF</code>)に変更。ロゴ自体は従来通りシアンのまま</label></li>
+<li><label><input type="checkbox"
+checked="" />Plymouth起動スプラッシュ(<code>quokka.script</code>)のプログレスバー塗りつぶし色も同様に青へ変更</label></li>
+<li><label><input
+type="checkbox" />実機での起動確認は未実施</label></li>
+</ul>
+<h2
+id="milestone-18-システム管理系guiツールを追加ちゃんとしたos感の底上げ">Milestone
+18: システム管理系GUIツールを追加(「ちゃんとしたOS」感の底上げ)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" /><strong>Timeshift</strong>(システム復元ポイント。Linux
+Mintの代表機能)を追加</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>Synaptic</strong>(GUIパッケージ管理)を追加</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>GUFW</strong>(ファイアウォール設定GUI)を追加。既定では<code>ufw</code>を有効化せず出荷し、
+有効化はユーザーの判断に委ねる</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>quokka-about</strong>(「Quokka
+OSについて」パネル)を新規実装。ロゴ・OS/カーネル情報を
+表示するzenityダイアログで、アプリケーションメニューと<code>quokka-tweaks</code>両方から起動可能</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>quokka-tweaks</code>に「about」「system-tools」項目を追加、<code>quokka-welcome</code>にも案内を追加</label></li>
+<li><label><input type="checkbox" />正直な制約:
+<code>quokka-vpn-killswitch</code>は独自のnftablesテーブル(<code>inet quokka_vpn</code>)を
+直接操作しており、<code>ufw</code>は別途自分のルールセットを管理する設計。理論上は競合しないが、
+両方を同時に有効化した場合の実機での相互作用は未検証</label></li>
+<li><label><input type="checkbox" />正直な制約:
+<code>quokka-tweaks</code>から呼んでいる<code>timeshift-gtk</code>/<code>pkexec synaptic</code>/<code>pkexec gufw</code>
+などの起動コマンド名・特権昇格の扱いは各パッケージの実際の<code>.desktop</code>ファイル実装に
+依存する部分があり、実機での動作確認は未実施(コマンド名が違えば要修正)</label></li>
+</ul>
+<h2 id="milestone-19-初回起動画面の確認">Milestone 19:
+初回起動画面の確認</h2>
+<ul>
+<li>ライブISOの起動メニュー(Try Quokka OS / Install Quokka OS
+等)は、live-build標準の
+ブートローダーテンプレートがそのまま使われており、テキスト自体はQuokka専用に
+書き換えていない(配色・ロゴはGRUBテーマ経由で反映される想定)</li>
+<li>「Forensic mode」起動メニュー項目は既存の制約通り未着手のまま
+(Milestone 8参照。ブートローダーテンプレート書き換えは実機検証なしでは
+起動不能リスクがあるため見送り継続)</li>
+</ul>
+<h2
+id="milestone-20-quokka-fire独自tor強制ルーティングツールを本プロジェクトに実装">Milestone
+20: Quokka
+Fire(独自Tor強制ルーティングツール)を本プロジェクトに実装</h2>
+<ul>
+<li>以前チャット内で標準的な成果物として提示していた「Fire
+Quokka」(iptables版)は
+今回アップロードされたプロジェクト本体には未反映だったため、<code>quokka-vpn-killswitch</code>と
+同じnftablesの作法に揃えて<code>quokka-fire</code>として新規実装</li>
+<li><label><input type="checkbox"
+checked="" /><code>quokka-fire</code>(CLIバックエンド):
+start/stop/status/change/panic</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>quokka-fire-gui</code>(Python3 +
+GTK3によるGUIフロントエンド): 状態表示・トグル・
+回線変更・パニックボタンをウィンドウで操作可能に。特権操作はpkexec経由</label></li>
+<li><label><input type="checkbox"
+checked="" />アプリケーションランチャー・<code>quokka-welcome</code>への案内を追加</label></li>
+<li><label><input type="checkbox" />正直な制約: GTK3
+Python実装は実際のXFCEセッションで起動確認できておらず、
+pkexecの認証プロンプトの挙動・nftables
+NATチェーンの実際の動作は実機検証が必要</label></li>
+</ul>
+<h2 id="milestone-21-他osとの比較調査parrot-os由来のギャップ">Milestone
+21: 他OSとの比較調査(Parrot OS由来のギャップ)</h2>
+<ul>
+<li>Parrot OSとの比較調査により、Quokka
+OSに無い代表的な独自ツールを2点特定し追加:
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" /><strong>Wifiphisher</strong> —
+GUI操作可能なWi-Fiソーシャルエンジニアリング/不正AP作成ツール</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>ZuluCrypt</strong> —
+LUKS/VeraCrypt/TrueCrypt対応のGUI暗号化ツール</label></li>
+</ul></li>
+<li><label><input type="checkbox" />未着手(backlog):
+Parrot/多くの現代ディストロは<strong>インストール時のディスク暗号化を
+既定で有効/推奨</strong>にしている。現状Quokka
+OSは<code>calamares-settings-debian</code>の
+Debian既定設定に任せたままで、暗号化がデフォルトでオンではない可能性が高い。
+Calamaresのpartitionモジュール設定(<code>partition.conf</code>)のカスタマイズが必要だが、
+ブートローダー同様にインストーラーの中核設定であり、実機検証なしに変更すると
+インストール自体が壊れるリスクがあるため、今回は変更せず調査結果の記録のみに留めた</label></li>
+</ul>
+<h2
+id="milestone-22-ui改善の続き欠落アセット修正メニュー刷新日本語フォント">Milestone
+22: UI改善の続き(欠落アセット修正・メニュー刷新・日本語フォント)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" /><strong>欠落アセットの発見・修正</strong>:
+<code>quokka-fire-indicator</code>(genmonパネル表示)自体は
+既に実装済みだったが、そこから参照される<code>logo-gray.png</code>(無効時アイコン)の
+実体が無かった。グレースケール版を新規生成して補完</label></li>
+<li><label><input type="checkbox"
+checked="" />アプリケーションメニューを基本の<code>applicationsmenu</code>から検索機能付きの
+<strong>Whiskermenu</strong>(<code>xfce4-whiskermenu-plugin</code>)に変更。Mint/Zorinのような
+使い勝手に近づけた</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>日本語表示の欠落に気づき修正</strong>:
+これまで大量の日本語UI文言(zenityダイアログ等)を
+追加してきたにもかかわらず、CJK対応フォントパッケージが一つも入っていなかった。
+<code>fonts-noto-cjk</code>を追加し、<code>xsettings.xml</code>・LightDMグリーターのフォント指定を
+<code>Noto Sans CJK JP</code>に変更(この修正が無いと日本語が文字化け/豆腐表示になっていた
+可能性が高い)</label></li>
+<li><label><input type="checkbox" />検討したが見送り:
+Plank等のドック追加。パネルを下部に変更した(Milestone 15)ことで
+タスクバーと役割が重複し、Mint的な「パネル1本で完結」という落ち着いた方向性から
+外れると判断したため</label></li>
+<li><label><input type="checkbox" />次の候補(未着手):
+通知ポップアップ(xfce4-notifyd)のテーマ・配色は未確認</label></li>
+<li><label><input type="checkbox" />正直な制約:
+genmonプラグインの<code>update-interval</code>等のxfconfプロパティ名は
+xfce4-genmon-pluginの実際のスキーマに基づくbest-effortで、実機での動作は未検証</label></li>
+</ul>
+<h2
+id="milestone-23-通知ポップアップxfce4-notifydの設定を追加">Milestone
+23: 通知ポップアップ(xfce4-notifyd)の設定を追加</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" /><code>xfce4-notifyd.xml</code>を新規作成。表示時間(10秒)・Do
+Not Disturb初期値(オフ)・
+スライドアウトアニメーションを設定</label></li>
+<li><label><input type="checkbox"
+checked="" />通知の見た目自体はGTKテーマ(Qogir-Dark)を自動継承するため、テーマ関連の
+プロパティは明示的に指定していない</label></li>
+<li><label><input type="checkbox" />意図的に指定しなかった:
+表示位置(<code>notify-location</code>)。パネル位置(Milestone 15)と
+同様、xfconfの数値enumがバージョン/ディストロで意味が揺れている実例が複数あり、
+誤指定のリスクの方が大きいと判断し、xfce4-notifyd自身の既定値に委ねた</label></li>
+</ul>
+<h2 id="milestone-24-実用機能ドキュメント整備遊び心">Milestone 24:
+実用機能・ドキュメント整備・遊び心</h2>
+<ul>
+<li><label><input type="checkbox"
+checked="" /><strong>印刷(CUPS)・Bluetooth(blueman)・電源管理(TLP)・夜間モード(Redshift)・
+クリップボード履歴(xfce4-clipman-plugin)</strong>を追加。cups/bluetooth/tlpは
+サービスを有効化するフックも追加(<code>0150-quokka-desktop-essentials.hook.chroot</code>)</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>manページ</strong>の欠落分3件を新規作成:
+<code>quokka-hash</code> / <code>quokka-evidence-add</code> /
+<code>quokka-fire-indicator</code>。他の主要コマンド(quokka-report /
+quokka-fire / quokka-fire-gui / quokka-vpn-killswitch / quokka-monitor /
+quokka-tweaks / quokka-about / quokkafetch / quokka-undercover /
+quokka-welcome)には 既にmanページが揃っていた</label></li>
+<li><label><input type="checkbox"
+checked="" />トップレベル<code>README.md</code>の古い記述(xfwm4=Arc-Dark等)を修正し、
+独自ツール群への導線を追記(詳細な変更履歴は本roadmap.mdに集約する方針を明記)</label></li>
+<li>[発見] <strong>遊び心</strong>: 隠しコマンド <code>quokka</code>
+が既に実装済みだった。ターミナルで実行すると
+ランダムなひとことメッセージを表示し、1/20の確率でレア演出(ASCIIアート)が出る</li>
+<li><label><input type="checkbox" />未着手のまま(backlog):
+手動でパネルに追加した<code>clipman</code>のクリップボード履歴保持数
+(デフォルト値)や、ホットキー割り当てのカスタマイズは未調整</label></li>
+</ul>
+<h2 id="milestone-25-遊び心の追加第2弾">Milestone 25:
+遊び心の追加第2弾</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" /><strong>quokka-wisdom</strong>(新規隠しコマンド):
+<code>fortune</code>+<code>cowsay</code>でクオッカが一言くれる。
+専用の一言集(<code>/usr/share/games/fortunes/quokka</code>、ペンテスト/セキュリティ文化+
+クオッカネタ)と、quokkafetchと同じ顔モチーフの<code>cowsay</code>用ASCIIアート
+(<code>quokka.cow</code>)を新規作成</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>sl</code>(定番のタイポジョークパッケージ)を追加</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>sudo</code>の<code>insults</code>オプションを有効化(パスワード間違い時に軽口を叩く、
+sudoの正式な古典機能)</label></li>
+<li><label><input type="checkbox"
+checked="" />fortuneデータベースのコンパイル(<code>strfile</code>)をビルドフックに追加
+(<code>0160-quokka-fun.hook.chroot</code>)</label></li>
+<li><label><input type="checkbox" />正直な制約:
+<code>strfile</code>のフォーマットや<code>cowsay</code>の<code>.cow</code>ファイル記法の細部は
+実際に<code>fortune</code>/<code>cowsay</code>コマンドを実行して確認できておらず、構文ミスの
+可能性はゼロではない</label></li>
+</ul>
+<h2 id="milestone-26-日本語入力imeの欠落を発見修正">Milestone 26:
+日本語入力(IME)の欠落を発見・修正</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" /><strong>重大な見落としを発見</strong>: 表示側(Noto
+CJKフォント、Milestone 22)は直したが、
+日本語を「入力する」ためのIME(fcitx5等)が一つも入っておらず、日本語の
+文字が読めても打てない状態だった。<code>fcitx5</code> +
+<code>fcitx5-mozc</code>一式を追加し、
+<code>/etc/environment</code>でGTK_IM_MODULE等を設定、autostartエントリも追加</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>quokka-tweaks</code>に<strong>USBGuardの初回設定導線</strong>を追加(「USBGuardに今のUSB機器構成を
+許可登録する」)。Milestone
+10で残っていた手動運用の課題を解消</label></li>
+<li><label><input type="checkbox" />正直な制約:
+fcitx5のautostart・環境変数設定は実機のXFCEセッションで動作確認できておらず、
+Debianパッケージが独自に用意する設定(im-config等)と重複・競合する可能性はゼロではない</label></li>
+</ul>
+<h2 id="milestone-27-kaliubuntuとの比較調査">Milestone 27:
+Kali/Ubuntuとの比較調査</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" /><strong>exploitdb(searchsploit)</strong> —
+Kaliでは標準搭載だが未導入だったオフライン
+エクスプロイト検索ツールを追加</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>gnome-disk-utility</strong> —
+Ubuntu(usb-creator)/Mint(mintstick)相当の
+USBイメージ書き込み機能。Debian標準リポジトリでの可用性を優先しこちらを採用</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>ライブUSB永続化(persistence)の手順書</strong>(<code>docs/persistence.md</code>)を新規作成。
+Kali/Ubuntuにある機能(live-boot標準機能)だが、Quokka
+OS側では手順書のみで 自動化ツールは未実装</label></li>
+<li><label><input type="checkbox" />検討したが見送り:
+Kaliの<code>kali-tweaks</code>(リポジトリ切り替え・ハードニングモード等)
+相当の機能。Quokka
+OSは独自のリポジトリ運用方針のため直接の対応物は不要と判断</label></li>
+</ul>
+<h2
+id="milestone-28-重要kali標準カテゴリの大きな見落としを発見修正">Milestone
+28: 【重要】Kali標準カテゴリの大きな見落としを発見・修正</h2>
+<ul>
+<li>これまでの比較調査は個別ツール単位(Wifiphisher、searchsploit等)で行っていたが、
+改めて<strong>Kaliの標準メタパッケージカテゴリを網羅的に棚卸し</strong>したところ、
+主要カテゴリが複数丸ごと抜け落ちていたことが判明した</li>
+<li><label><input type="checkbox"
+checked="" /><strong>kali-tools-exploitation</strong>(Metasploit
+Framework等) — これまで一切導入されて
+いなかった。ペンテスト用OSとして最も基本的なカテゴリの欠落</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>kali-tools-wireless</strong>(aircrack-ng等) —
+これも未導入だった。既存の
+<code>quokka-monitor</code>(モニターモード切り替えツール)と対になる実行部隊が
+無い状態だったことになる</label></li>
+<li><label><input type="checkbox"
+checked="" />kali-tools-social-engineering(SET等)</label></li>
+<li><label><input type="checkbox"
+checked="" />kali-tools-post-exploitation</label></li>
+<li><label><input type="checkbox"
+checked="" />kali-tools-database</label></li>
+<li><label><input type="checkbox"
+checked="" />kali-tools-crypto-stego</label></li>
+<li><label><input type="checkbox"
+checked="" />kali-tools-fuzzing</label></li>
+<li><label><input type="checkbox"
+checked="" />kali-tools-gpu(hashcat等。実際のGPUアクセラレーションには別途ドライバ対応が必要)</label></li>
+<li><label><input type="checkbox" />正直な制約:
+これでKali公式の主要カテゴリはほぼ網羅したはずだが、「本当に
+漏れが無いか」の最終確認(Kali公式のカテゴリ一覧との一対一突き合わせ)は
+未実施。今後さらに漏れが見つかる可能性は残る</label></li>
+</ul>
+<h2
+id="milestone-29-kali公式メタパッケージ一覧との最終突き合わせ完了">Milestone
+29: Kali公式メタパッケージ一覧との最終突き合わせ(完了)</h2>
+<ul>
+<li><code>https://www.kali.org/tools/kali-meta/</code>
+を実際に取得し、Kali公式の全カテゴリ一覧
+(kali-tools-*)と現状のパッケージリストを一対一で突き合わせた</li>
+<li><label><input type="checkbox"
+checked="" /><strong>kali-tools-detect</strong>(NIST CSF:
+DETECT)</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>kali-tools-hardware</strong>(ハードウェア攻撃・JTAG/ファームウェア解析)</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>kali-tools-identify</strong>(NIST CSF:
+IDENTIFY。amass/spiderfoot/maltego等)</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>kali-tools-protect</strong>(NIST CSF:
+PROTECT。ClamAV等の防御系も含む)</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>kali-tools-recover</strong>(NIST CSF:
+RECOVER。データ復旧系)</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>kali-tools-respond</strong>(NIST CSF:
+RESPOND)</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>kali-tools-voip</strong>(VoIP攻撃系)</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>kali-tools-top10</strong>(定番ツールの安全網。burpsuite/netexec等の取りこぼし防止)</label></li>
+<li><label><input type="checkbox"
+checked="" /><strong>kali-tools-windows-resources</strong>(mimikatz/powercat等、Windows/AD侵入用)</label></li>
+<li>確認事項: kali-tools-802-11 / kali-tools-bluetooth / kali-tools-rfid
+/ kali-tools-sdr は
+既存の<code>kali-tools-wireless</code>が依存関係として自動的に含むため、個別追加は不要と判断</li>
+<li><strong>これでKali公式の<code>kali-tools-*</code>カテゴリは全て網羅した</strong>(kali-linux-arm/nethunter/wsl等の
+プラットフォーム別メタパッケージは既存の対象外方針の通り除外)</li>
+</ul>
+<h2 id="milestone-30-効果音パックの拡充全6ジャンル">Milestone 30:
+効果音パックの拡充(全6ジャンル)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" />ログイン効果音を1種類から<strong>6ジャンル</strong>に拡充(ffmpegによる合成音):
+標準(2音チャイム) / chiptune(8bit) / orchestral(オーケストラ風) /
+synth(EDM風上昇音) / rock(パワーコード) / ambient(パッド音)</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>quokka-tweaks</code>に選択項目を追加。選んだジャンルは<code>~/.config/quokka/login-sound</code>に
+保存され、選択時にプレビュー再生もされる</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>quokka-fire panic</code>実行時に専用の警告音(<code>panic.ogg</code>)を鳴らすようにした</label></li>
+<li><label><input type="checkbox" />検討したが見送り:
+本物のMIDI再生(<code>.mid</code>ファイル)。fluidsynth+サウンドフォントが
+追加で必要になり依存関係が重くなること、実機での音質・遅延を確認できないことから、
+軽量なffmpeg合成音のバリエーションで対応する方針とした</label></li>
+<li><label><input type="checkbox" />正直な制約:
+<code>quokka-fire panic</code>はroot権限で動作するため、<code>paplay</code>が一般ユーザーの
+PulseAudioセッションに届かず鳴らない可能性がある(実機での動作未検証)</label></li>
+<li><label><input type="checkbox" />正直な制約:
+全ての音はffmpegの正弦波合成によるシンプルな効果音であり、
+本格的な「楽器の音」ではない(このサンドボックス環境で本物の音源/
+サウンドフォントを試すことができないため)</label></li>
+</ul>
+<h2 id="milestone-31-ドキュメントサイトdocssiteの刷新">Milestone 31:
+ドキュメントサイト(docs/site/)の刷新</h2>
+<ul>
+<li>これまでOS本体のテーマはQogir方針に転換してきたが、<code>docs/site/</code>の11ページは
+旧来のシアン発光デザインのまま放置されていた(旧デザインの「顔」を差し替え忘れていた)</li>
+<li><label><input type="checkbox"
+checked="" />全11ページのCSSを一括置換:
+グロー/text-shadow効果を除去、アクセントカラーを
+シアンから青(<code>#4C8DFF</code>)に、フォントをJetBrains Mono一本槍から
+<code>Noto Sans CJK JP</code>(本文)+等幅(コードのみ)に変更</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>palette.html</code>のデザイン方針セクションを実際の方針(Qogir採用・restrained
+cyan)に
+書き換え(旧内容は「グロー/ネオンをシグネチャに」という今と矛盾する記述だった)</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>roadmap.html</code>を最新の<code>roadmap.md</code>(Milestone
+30まで)から<code>pandoc</code>で再生成</label></li>
+<li><label><input type="checkbox"
+checked="" /><code>index.html</code>の内容を全面更新(Quokka独自ツール一覧・秘匿性/ハードニング・
+現在のディレクトリ構成を反映。旧内容はMilestone
+9相当で止まっていた)</label></li>
+<li><label><input type="checkbox" />未着手(backlog):
+<code>desktop-environment.html</code> /
+<code>distro-decision.html</code> / <code>installer.html</code> /
+<code>live-build.html</code> / <code>openvpn.html</code> /
+<code>pentest-config.html</code> / <code>tool-selection.html</code> /
+<code>vm-build.html</code>
+の8ページは<strong>CSS(見た目)のみ</strong>更新済みで、
+本文の内容そのもの(Qogir採用やquokka-fire等への言及)はまだ古いまま。
+全ページの内容を最新化するには対応するdocs/*.mdの本文更新も含めた
+まとまった作業が必要</label></li>
+<li><label><input type="checkbox" />正直な制約:
+<code>wkhtmltoimage</code>で簡易的に見た目は確認したが、実際のブラウザでの
+表示・リンク遷移の網羅的な確認はできていない</label></li>
+</ul>
+<h2 id="修正-github-actionsワークフローの構文エラー">修正: GitHub
+Actionsワークフローの構文エラー</h2>
+<p><code>.github/workflows/build.yml</code> の <code>if:</code> 条件式で
+<code>secrets.QUOKKA_GPG_PRIVATE_KEY != ''</code> を
+直接使っていたが、GitHub公式ドキュメント記載の通り
+<strong><code>secrets</code>コンテキストは<code>if:</code>条件式内では
+参照できない</strong>制約に引っかかっていた(<code>Unrecognized named-value: 'secrets'</code>)。
+job-level <code>env:</code> に <code>HAS_GPG_PRIVATE_KEY</code> /
+<code>HAS_GPG_KEY_ID</code> という真偽値を一度経由させ、
+<code>if:</code> 側はそちらを参照するように修正した。</p>
 </main>
 </body>
 </html>

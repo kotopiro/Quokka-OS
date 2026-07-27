@@ -10,6 +10,7 @@
     --quokka-bg-elevated: #0A0F1E;
     --quokka-bg-elevated-2: #111A2E;
     --quokka-cyan: #00CFFE;
+    --quokka-blue: #4C8DFF;
     --quokka-cyan-dim: #0088AF;
     --quokka-cyan-glow: #7BEFFF;
     --quokka-text: #E8FBFF;
@@ -23,7 +24,7 @@
     margin: 0;
     background: var(--quokka-bg);
     color: var(--quokka-text);
-    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, Menlo, Consolas, monospace;
+    font-family: 'Noto Sans CJK JP', 'Inter', -apple-system, sans-serif;
     display: flex;
     min-height: 100vh;
   }
@@ -44,12 +45,12 @@
     margin-bottom: 12px;
   }
   nav .brand a {
-    color: var(--quokka-cyan);
+    color: var(--quokka-blue);
     text-decoration: none;
     font-weight: bold;
     font-size: 1.15em;
     letter-spacing: 0.5px;
-    text-shadow: 0 0 8px rgba(0,207,254,0.5);
+    
   }
   nav .brand .tagline {
     display: block;
@@ -73,10 +74,10 @@
     background: var(--quokka-bg-elevated-2);
   }
   nav li a.active {
-    color: var(--quokka-cyan);
-    border-left: 3px solid var(--quokka-cyan);
+    color: var(--quokka-blue);
+    border-left: 3px solid var(--quokka-blue);
     background: var(--quokka-bg-elevated-2);
-    text-shadow: 0 0 6px rgba(0,207,254,0.4);
+    
   }
   main {
     flex: 1;
@@ -84,7 +85,7 @@
     padding: 48px 56px 96px 56px;
   }
   h1, h2, h3, h4 {
-    color: var(--quokka-cyan);
+    color: var(--quokka-blue);
     font-weight: 600;
     line-height: 1.3;
   }
@@ -93,11 +94,10 @@
     border-bottom: 1px solid var(--quokka-cyan-dim);
     padding-bottom: 12px;
     margin-top: 0;
-    text-shadow: 0 0 10px rgba(0,207,254,0.35);
   }
   h2 { font-size: 1.35em; margin-top: 2.2em; }
   h3 { font-size: 1.1em; color: var(--quokka-cyan-glow); }
-  a { color: var(--quokka-cyan); }
+  a { color: var(--quokka-blue); }
   p, li { line-height: 1.75; color: var(--quokka-text); font-size: 0.95em; }
   code {
     background: var(--quokka-bg-elevated-2);
@@ -122,7 +122,7 @@
     text-align: left;
     font-size: 0.9em;
   }
-  th { color: var(--quokka-cyan); background: var(--quokka-bg-elevated); }
+  th { color: var(--quokka-blue); background: var(--quokka-bg-elevated); }
   tr:nth-child(even) { background: var(--quokka-bg-elevated); }
   blockquote {
     border-left: 3px solid var(--quokka-warning);

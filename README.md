@@ -4,11 +4,15 @@
 Kali Linux / Parrot OS 系譜の「ホワイトハッカー御用達」を目指す。
 
 - ベース: **Debian (bookworm)** + Kaliリポジトリのオーバーレイ (`docs/distro-decision.md`)
-- デスクトップ: **XFCE + LightDM** (`docs/desktop-environment.md`)
+- デスクトップ: **XFCE + LightDM**、テーマは **Qogir-Dark**(GTK/xfwm4/アイコン、`Milestone 14`) (`docs/desktop-environment.md`)
 - インストーラ: **Calamares(メイン、ブランド適用済み)+ 従来型Debian Installer(上級者向け)** (`docs/installer.md`)
 - ツール構成: Kaliの`kali-tools-*`をQuokka独自カテゴリ名でラップ (`docs/tool-selection.md`)
+- 独自ツール: `quokka-report`(レポート生成)/`quokka-fire`+GUI(Tor強制ルーティング)/
+  `quokka-about`/`quokkafetch` など。man page完備(`man quokka-report`等)
 - 配布形態: ISO (`live-build/`) + VM (`vm-build/`、VirtualBox/.ova・QEMU/.qcow2)
 - ビルドプロファイル: `QUOKKA_PROFILE=standard|full`
+
+開発の全履歴・正直な制約事項は `docs/roadmap.md` に集約している(このREADMEは概要のみ)。
 
 ## ディレクトリ構成
 
@@ -43,7 +47,8 @@ quokka-os/
 
 ## 実装済み
 - `live-build/auto/config` に `QUOKKA_PROFILE=standard|full` 分岐を追加
-- xfwm4 は `Arc-Dark` を既定化し、上部シングルパネルの xfconf を追加
+- xfwm4/GTK/アイコンは **Qogir-Dark**(vinceliuice/Qogir-theme, GitHubからビルド時導入)を既定化、
+  パネルは下部・Whiskermenu(検索付きアプリメニュー)
 - `pentest-config/` を新設し、monitor mode / VPN kill switch / NetworkManager / proxychains4 / OpenVPN 運用メモを追加
 - `wordlists` パッケージ導入と、`rockyou.txt.gz` をビルド時展開する hook を追加
 - VM preseed に初回ログイン時パスワード変更強制と SSH root 直ログイン禁止を追加

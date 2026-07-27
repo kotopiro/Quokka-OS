@@ -10,6 +10,7 @@
     --quokka-bg-elevated: #0A0F1E;
     --quokka-bg-elevated-2: #111A2E;
     --quokka-cyan: #00CFFE;
+    --quokka-blue: #4C8DFF;
     --quokka-cyan-dim: #0088AF;
     --quokka-cyan-glow: #7BEFFF;
     --quokka-text: #E8FBFF;
@@ -23,7 +24,7 @@
     margin: 0;
     background: var(--quokka-bg);
     color: var(--quokka-text);
-    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, Menlo, Consolas, monospace;
+    font-family: 'Noto Sans CJK JP', 'Inter', -apple-system, sans-serif;
     display: flex;
     min-height: 100vh;
   }
@@ -44,12 +45,12 @@
     margin-bottom: 12px;
   }
   nav .brand a {
-    color: var(--quokka-cyan);
+    color: var(--quokka-blue);
     text-decoration: none;
     font-weight: bold;
     font-size: 1.15em;
     letter-spacing: 0.5px;
-    text-shadow: 0 0 8px rgba(0,207,254,0.5);
+    
   }
   nav .brand .tagline {
     display: block;
@@ -73,10 +74,10 @@
     background: var(--quokka-bg-elevated-2);
   }
   nav li a.active {
-    color: var(--quokka-cyan);
-    border-left: 3px solid var(--quokka-cyan);
+    color: var(--quokka-blue);
+    border-left: 3px solid var(--quokka-blue);
     background: var(--quokka-bg-elevated-2);
-    text-shadow: 0 0 6px rgba(0,207,254,0.4);
+    
   }
   main {
     flex: 1;
@@ -84,7 +85,7 @@
     padding: 48px 56px 96px 56px;
   }
   h1, h2, h3, h4 {
-    color: var(--quokka-cyan);
+    color: var(--quokka-blue);
     font-weight: 600;
     line-height: 1.3;
   }
@@ -93,11 +94,10 @@
     border-bottom: 1px solid var(--quokka-cyan-dim);
     padding-bottom: 12px;
     margin-top: 0;
-    text-shadow: 0 0 10px rgba(0,207,254,0.35);
   }
   h2 { font-size: 1.35em; margin-top: 2.2em; }
   h3 { font-size: 1.1em; color: var(--quokka-cyan-glow); }
-  a { color: var(--quokka-cyan); }
+  a { color: var(--quokka-blue); }
   p, li { line-height: 1.75; color: var(--quokka-text); font-size: 0.95em; }
   code {
     background: var(--quokka-bg-elevated-2);
@@ -122,7 +122,7 @@
     text-align: left;
     font-size: 0.9em;
   }
-  th { color: var(--quokka-cyan); background: var(--quokka-bg-elevated); }
+  th { color: var(--quokka-blue); background: var(--quokka-bg-elevated); }
   tr:nth-child(even) { background: var(--quokka-bg-elevated); }
   blockquote {
     border-left: 3px solid var(--quokka-warning);
@@ -254,13 +254,17 @@ id="セマンティックカラーツール表示アラート用">セマンテ�
 <ul>
 <li>背景は常に <code>#000410</code> 系のニアブラックネイビーで統一（Kali
 の紫、Parrot の緑とは明確に差別化）</li>
-<li>シアン一色を基調としたモノクロマティック配色 +
-セマンティックカラーのみ例外</li>
-<li>グロー/ネオン表現（box-shadow / drop-shadow で <code>#00CFFE</code>
-を薄く発光させる）をUI全体のシグネチャに</li>
-<li>フォントは等幅系（例: JetBrains Mono / Fira
-Code）でターミナル文化との親和性を優先</li>
+<li><strong>（方針転換済み）</strong> グロー/ネオン表現は「ださい」というフィードバックを受けて廃止。
+現在はGTKテーマに <a href="https://github.com/vinceliuice/Qogir-theme">Qogir-theme</a>
+（GPL-3.0）を採用し、角丸のフラットデザイン・青（<code>#4C8DFF</code>）を基調とした
+落ち着いた配色に変更した。シアン（<code>#00CFFE</code>）はロゴマークとカーソル
+（Quokka-Cyan）にのみ残している</li>
+<li>フォントはUI本文を <code>Noto Sans CJK JP</code>
+（日本語表示・入力のため）、コード/ターミナル表示のみ等幅系（JetBrains Mono）を使用</li>
 </ul>
+<p><em>このドキュメントサイト自体も同じ方針転換を反映済み（2026年7月更新）。
+下記のCSS変数表・コードサンプルは元々のシアン基調の設計案として歴史的に残しているが、
+実際のOS本体は上記の通りQogir方針で実装されている。</em></p>
 <h2
 id="css変数gtkテーマwebダッシュボード共通で使う想定">CSS変数（GTKテーマ・Webダッシュボード共通で使う想定）</h2>
 <div class="sourceCode" id="cb1"><pre
