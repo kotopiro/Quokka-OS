@@ -1,0 +1,11 @@
+#!/bin/sh
+# Quokka OS — 遊び心アセットのビルド時処理
+# fortune-modは本文ファイルに加えて strfile でコンパイルした .dat インデックスが必要
+set -e
+
+if command -v strfile >/dev/null 2>&1; then
+    strfile /usr/share/games/fortunes/quokka /usr/share/games/fortunes/quokka.dat
+    echo "[quokka] fortune database compiled"
+else
+    echo "[quokka] 警告: strfileが見つからずfortuneデータベースをコンパイルできませんでした" >&2
+fi

@@ -25,10 +25,19 @@ iw
 rfkill
 firmware-linux-free
 sudo
-arc-theme
-papirus-icon-theme
+# GTK/xfwm4/アイコンテーマは Qogir(vinceliuice/Qogir-theme, GPL-3.0)を
+# 0140-quokka-qogir-theme.hook.chroot でGitHubから導入する。
+# arc-theme/papirus-icon-themeは基本リストからは外し、Qogir導入失敗時のみ
+# フック側でフォールバックとしてpapirus-icon-themeを導入する
 fonts-jetbrains-mono
 xfce4-pulseaudio-plugin
+# firefox-esr: ブランド調ホームページ(policies.json)を機能させるために明示採用
+firefox-esr
+# whiskermenu: 検索機能付きの現代的なアプリメニュー(Mint/Zorin的な使い勝手のため
+# 基本のapplicationsmenuから変更)
+xfce4-whiskermenu-plugin
+# 日本語UI表示のためのCJKフォント(zenityダイアログ等で日本語を多用するため必須)
+fonts-noto-cjk
 # kali-menu: Kaliリポジトリ提供の「攻撃フェーズ別カテゴリメニュー」構造(01-info-gathering等)。
 # 自前で再実装するより、既にKaliリポジトリをオーバーレイ済みなのでこちらを使う方が確実。
 # 見た目(アイコン/配色)はQuokkaテーマがそのまま乗る想定だが、実ビルドでの確認は未実施。

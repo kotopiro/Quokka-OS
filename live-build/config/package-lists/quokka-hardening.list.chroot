@@ -1,0 +1,12 @@
+# Quokka OS — OSセキュリティハードニング用パッケージ
+# standard/full 共通(quokka.list.chrootと同じ扱いで常時含める)
+
+apparmor
+apparmor-profiles
+apparmor-profiles-extra
+fail2ban
+usbguard
+unattended-upgrades
+apt-listchanges
+libpam-pwquality
+auditd

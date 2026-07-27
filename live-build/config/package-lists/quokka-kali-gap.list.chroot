@@ -1,0 +1,10 @@
+# Quokka OS — Kali/Ubuntu比較調査で見つかった不足分
+
+# exploitdb: searchsploitコマンド(オフライン脆弱性/エクスプロイト検索)。
+# Kaliでは標準搭載だがQuokka OSには入っていなかった
+exploitdb
+
+# USBイメージライター(Disksアプリ、ISOをUSBに書き込む機能を含む)。
+# Ubuntu の usb-creator / Mint の mintstick に相当する機能をDebian標準の
+# gnome-disk-utility で代替(Debianリポジトリでの可用性が確実なため)
+gnome-disk-utility

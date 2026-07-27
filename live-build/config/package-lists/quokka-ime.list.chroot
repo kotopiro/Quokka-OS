@@ -1,0 +1,8 @@
+# Quokka OS — 日本語入力(IME)
+# 正直な経緯: 大量の日本語UI文言を追加し、Noto CJKフォントで表示は直したが、
+# 日本語を「入力する」ためのIMEが一つも入っていなかった(表示できても打てない状態)。
+fcitx5
+fcitx5-mozc
+fcitx5-frontend-gtk2
+fcitx5-frontend-gtk3
+fcitx5-frontend-qt5

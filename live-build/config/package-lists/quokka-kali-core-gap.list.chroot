@@ -1,0 +1,33 @@
+# Quokka OS — Kali標準カテゴリのうち、これまで導入漏れしていた重要なもの
+#
+# 正直な経緯: これまで information-gathering / vulnerability / web / passwords /
+# sniffing-spoofing / forensics / reverse-engineering / reporting は導入済みだったが、
+# 以下の主要カテゴリが丸ごと抜け落ちていた。特にexploitation(Metasploit)と
+# wireless(aircrack-ng等)は、quokka-monitor(モニターモード切り替えツール)を
+# 実際に使う相手が無い状態だったという点で影響が大きい。
+
+# Metasploit Framework等、エクスプロイト実行系
+kali-tools-exploitation
+
+# aircrack-ng等、無線LAN攻撃系(quokka-monitorと対になる本体)
+kali-tools-wireless
+
+# Social Engineering Toolkit (SET) 等
+kali-tools-social-engineering
+
+# 侵入後の権限維持・横展開系
+kali-tools-post-exploitation
+
+# データベース攻撃系
+kali-tools-database
+
+# ステガノグラフィ・暗号解析系(zulucrypt/steghideと重複する部分もあるが
+# メタパッケージとして網羅性を確保)
+kali-tools-crypto-stego
+
+# ファジング系
+kali-tools-fuzzing
+
+# hashcat等のGPUアクセラレーション対応(実際にGPUを使うにはドライバ側の
+# 別途対応が必要な点に注意。パッケージ導入のみ)
+kali-tools-gpu

@@ -1,0 +1,63 @@
+#!/bin/sh
+# Quokka OS — Qogir GTK/xfwm4/アイコンテーマ導入フック
+# (live-build の chroot 内で実行される)
+#
+# 背景: 独自に手作りしていたCSS上書きだけの「Quokka-Dark」テーマと、
+# ウィンドウ装飾(xfwm4)が他OS由来の「Arc-Dark」のままだった点について、
+# 「ださい」「FreeBSD/Mint/Zorinのような見た目にしたい」というフィードバックを受け、
+# vinceliuice/Qogir-theme (GPL-3.0, XFCE対応, 1.7k+ stars) を採用する方針に変更。
+# GTK・xfwm4(ウィンドウ枠)・アイコンテーマがセットで揃い、丸みを帯びた
+# モダンなフラットデザインになる。
+#
+# 正直な制約: このサンドボックス環境ではXFCEセッションを実際に起動して
+# 見た目を確認できていない。install.shの内部動作(xfwm4フォルダの自動生成等)は
+# vinceliuice系テーマ共通の既知の挙動を前提にしているが、実機での最終確認は未実施。
+# ネットワーク接続(GitHubへのアクセス)がビルド時に必須。
+set -e
+
+XSETTINGS=/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+XFWM4=/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+
+command -v git >/dev/null 2>&1 || { apt-get update; apt-get install -y git; }
+command -v sassc >/dev/null 2>&1 || { apt-get update; apt-get install -y sassc; }
+
+WORKDIR="$(mktemp -d)"
+cd "$WORKDIR"
+
+GTK_OK=0
+ICON_OK=0
+
+if git clone --depth=1 https://github.com/vinceliuice/Qogir-theme.git; then
+    if (cd Qogir-theme && ./install.sh -d /usr/share/themes -t default -c dark --tweaks round); then
+        GTK_OK=1
+    fi
+fi
+
+if git clone --depth=1 https://github.com/vinceliuice/Qogir-icon-theme.git; then
+    if (cd Qogir-icon-theme && ./install.sh -d /usr/share/icons -t default -c dark); then
+        ICON_OK=1
+    fi
+fi
+
+if [ "$GTK_OK" = "1" ]; then
+    echo "[quokka] Qogir GTK/xfwm4 theme installed"
+else
+    echo "[quokka] 警告: Qogir GTKテーマの導入に失敗。Arc-Darkにフォールバックします" >&2
+    sed -i 's/value="Qogir-Dark"/value="Arc-Dark"/' "$XFWM4" 2>/dev/null || true
+    sed -i 's/name="ThemeName" type="string" value="Qogir-Dark"/name="ThemeName" type="string" value="Arc-Dark"/' "$XSETTINGS" 2>/dev/null || true
+fi
+
+if [ "$ICON_OK" = "1" ]; then
+    echo "[quokka] Qogir icon theme installed"
+else
+    echo "[quokka] 警告: Qogirアイコンテーマの導入に失敗。Papirus-Darkにフォールバックします" >&2
+    sed -i 's/name="IconThemeName" type="string" value="Qogir-Dark"/name="IconThemeName" type="string" value="Papirus-Dark"/' "$XSETTINGS" 2>/dev/null || true
+    apt-get install -y papirus-icon-theme || true
+fi
+
+cd /
+rm -rf "$WORKDIR"
+apt-get purge -y sassc >/dev/null 2>&1 || true
+apt-get autoremove -y >/dev/null 2>&1 || true
+
+echo "[quokka] qogir theme hook finished (gtk=$GTK_OK icon=$ICON_OK)"

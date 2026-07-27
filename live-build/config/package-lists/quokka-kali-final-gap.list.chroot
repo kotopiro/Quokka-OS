@@ -1,0 +1,36 @@
+# Quokka OS — Kali公式メタパッケージ一覧との最終突き合わせ
+#
+# https://www.kali.org/tools/kali-meta/ の全カテゴリと突き合わせた結果、
+# 以下がまだ導入されていなかった。これで公式カテゴリはほぼ全て網羅したはず。
+#
+# 注記: kali-tools-802-11 / kali-tools-bluetooth / kali-tools-rfid / kali-tools-sdr は
+# 既に導入済みの kali-tools-wireless が依存関係として自動的に含むため、
+# ここでは個別に追加していない。
+
+# NIST CSF: DETECT
+kali-tools-detect
+
+# ハードウェア攻撃(JTAG/ファームウェア解析等)
+kali-tools-hardware
+
+# NIST CSF: IDENTIFY(攻撃対象領域の特定。amass/spiderfoot/maltego等)
+kali-tools-identify
+
+# NIST CSF: PROTECT(ClamAVアンチウイルス等の防御系ツールも含む)
+kali-tools-protect
+
+# NIST CSF: RECOVER(データ復旧系)
+kali-tools-recover
+
+# NIST CSF: RESPOND
+kali-tools-respond
+
+# VoIP攻撃系
+kali-tools-voip
+
+# Kali's Top 10(定番ツールの安全網。burpsuite/netexec等、他カテゴリに
+# 含まれていないものの取りこぼしを防ぐ)
+kali-tools-top10
+
+# Windows/AD侵入用リソース(mimikatz/powercat等)
+kali-tools-windows-resources

@@ -1,0 +1,8 @@
+# Quokka OS — 他ディストロ比較調査で見つけた不足分
+# (Parrot OS由来の代表的な独自ツール。Kaliのリポジトリ経由で導入)
+
+# Wifiphisher: GUI操作可能なWi-Fiソーシャルエンジニアリング/不正AP作成ツール
+wifiphisher
+
+# ZuluCrypt: LUKS/VeraCrypt/TrueCrypt対応のGUI暗号化ツール
+zulucrypt

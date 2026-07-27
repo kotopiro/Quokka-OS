@@ -20,8 +20,7 @@ if [ -f /etc/default/grub ]; then
     update-grub || true
 fi
 
-# デスクトップ壁紙をデフォルトに(XFCE想定。DE確定後に見直し)
-mkdir -p /etc/skel/.config
-echo "quokka-wallpaper: /usr/share/backgrounds/quokka/quokka-wallpaper-1920x1080.png" > /etc/skel/.config/quokka-wallpaper.conf
+# デスクトップ壁紙は etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
+# で正式に設定するため、ここでは何もしない(以前あったスタブ実装は削除)
 
 echo "[quokka] branding hook applied"

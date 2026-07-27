@@ -1,0 +1,15 @@
+# Quokka OS — 実用機能(印刷・Bluetooth・電源管理)
+# 「普通に使えるOS」として欠けていた基本機能群
+
+# 印刷(CUPS)
+cups
+system-config-printer
+printer-driver-all
+
+# Bluetooth
+bluez
+blueman
+
+# ノートPCの電源・バッテリー管理(Mint/Zorin標準)
+tlp
+tlp-rdw

@@ -1,0 +1,22 @@
+#!/bin/sh
+# Quokka OS — OSセキュリティハードニング適用フック
+# (live-build の chroot 内で実行される)
+set -e
+
+# AppArmorを有効化(パッケージのpostinstで有効化されるはずだが明示しておく)
+if command -v systemctl >/dev/null 2>&1; then
+    systemctl enable apparmor.service 2>/dev/null || true
+    systemctl enable fail2ban.service 2>/dev/null || true
+    systemctl enable auditd.service 2>/dev/null || true
+    systemctl enable usbguard.service 2>/dev/null || true
+fi
+
+# 正直な制約: USBGuardはchroot内(実USBデバイスが存在しない環境)では
+# 意味のあるポリシーを生成できない。デフォルトのgenerate-policyは実行せず、
+# パッケージ既定のポリシーのまま出荷し、初回実機起動後にユーザー自身が
+#   sudo usbguard generate-policy | sudo tee /etc/usbguard/rules.conf
+#   sudo systemctl restart usbguard
+# を実行して自分のUSBデバイス構成を反映する運用とする。
+# (quokka-welcome / quokka-tweaks 側への導線追加は別タスク)
+
+echo "[quokka] hardening hook applied (apparmor/fail2ban/auditd/usbguard enabled; sysctl/ssh/pwquality/unattended-upgrades via includes.chroot)"

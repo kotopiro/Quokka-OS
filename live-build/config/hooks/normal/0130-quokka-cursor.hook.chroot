@@ -1,0 +1,50 @@
+#!/bin/sh
+# Quokka OS — カーソルテーマ適用フック (live-build の chroot 内で実行される)
+#
+# 正直な制約: このテーマは left_ptr(標準の矢印ポインタ)のみを独自デザインし、
+# それ以外のカーソル形状は index.theme の Inherits=Adwaita で既存テーマから継承する
+# 一次実装。xcursorgenを提供するパッケージ名(x11-apps)は本サンドボックス内では
+# 実機確認できておらず、Debian bookwormでの実際のパッケージ名は要確認。
+set -e
+
+SRC_DIR=/usr/share/quokka-os/cursor-src
+THEME_DIR=/usr/share/icons/Quokka-Cyan/cursors
+
+if ! command -v xcursorgen >/dev/null 2>&1; then
+    apt-get update
+    apt-get install -y --no-install-recommends x11-apps || \
+        echo "[quokka] 警告: xcursorgenが導入できませんでした。カーソルテーマ生成をスキップします" >&2
+fi
+
+if command -v xcursorgen >/dev/null 2>&1 && [ -d "$SRC_DIR" ]; then
+    mkdir -p "$THEME_DIR"
+    ( cd "$SRC_DIR" && xcursorgen left_ptr.cursor.in "$THEME_DIR/left_ptr" )
+
+    # 他のツールキットが参照する代表的な別名にもリンク
+    for alias in default arrow top_left_arrow X_cursor; do
+        ln -sf left_ptr "$THEME_DIR/$alias"
+    done
+
+    cat > /usr/share/icons/Quokka-Cyan/index.theme <<'EOF'
+[Icon Theme]
+Name=Quokka-Cyan
+Comment=Quokka OS custom pointer (left_ptr), rest inherited from Adwaita
+Inherits=Adwaita
+EOF
+
+    # システム全体の既定カーソルテーマとして設定(X11の標準的な仕組み)
+    mkdir -p /usr/share/icons/default
+    cat > /usr/share/icons/default/index.theme <<'EOF'
+[Icon Theme]
+Inherits=Quokka-Cyan
+EOF
+
+    # ビルド専用のソース素材とxcursorgenのみのパッケージは残さない
+    rm -rf "$SRC_DIR"
+    apt-get purge -y x11-apps >/dev/null 2>&1 || true
+    apt-get autoremove -y >/dev/null 2>&1 || true
+
+    echo "[quokka] cursor theme (Quokka-Cyan) applied"
+else
+    echo "[quokka] cursor hook skipped (xcursorgen unavailable or source missing)"
+fi

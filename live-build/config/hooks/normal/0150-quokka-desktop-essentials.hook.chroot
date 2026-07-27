@@ -1,0 +1,11 @@
+#!/bin/sh
+# Quokka OS — 実用機能サービスの有効化
+set -e
+
+if command -v systemctl >/dev/null 2>&1; then
+    systemctl enable cups.service 2>/dev/null || true
+    systemctl enable bluetooth.service 2>/dev/null || true
+    systemctl enable tlp.service 2>/dev/null || true
+fi
+
+echo "[quokka] desktop essentials hook applied (cups/bluetooth/tlp enabled)"

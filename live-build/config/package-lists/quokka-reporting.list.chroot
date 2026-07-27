@@ -1,1 +1,3 @@
 kali-tools-reporting
+# pandoc: quokka-report(独自レポート生成ツール)のMarkdown→HTML変換用
+pandoc

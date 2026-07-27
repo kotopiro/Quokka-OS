@@ -1,0 +1,21 @@
+# Quokka OS — 一般的なOSとしての実用機能
+# (印刷・Bluetooth・電源管理・夜間モード・クリップボード履歴)
+
+# 印刷(CUPS)
+cups
+system-config-printer
+
+# Bluetooth
+bluetooth
+blueman
+
+# ノートPCの電源・バッテリー管理(Mint/Zorin標準)
+tlp
+tlp-rdw
+
+# 夜間モード(画面の色温度を時間帯で自動調整)
+redshift
+redshift-gtk
+
+# クリップボード履歴(XFCEパネルプラグイン)
+xfce4-clipman-plugin

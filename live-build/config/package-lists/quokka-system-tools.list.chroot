@@ -1,0 +1,16 @@
+# Quokka OS — システム管理系GUIツール
+# 「ちゃんとしたOS」感を出すための標準搭載アプリ群。standard/full共通。
+
+# Timeshift: システム復元ポイント(Linux Mintの代表機能)
+timeshift
+
+# Synaptic: GUIパッケージ管理ツール
+synaptic
+
+# GUFW: ファイアウォール設定GUI(ufwのフロントエンド)
+# 正直な制約: quokka-vpn-killswitch は独自のnftablesテーブル(inet quokka_vpn)を
+# 直接操作しており、ufw/gufwは別途自分のルールセットを管理する。競合はしない設計だが、
+# 両方を同時に有効化した場合の相互作用は実機で未検証。デフォルトではufwを
+# 無効のまま出荷し、有効化はユーザーの判断に委ねる(ビルド時にenableしない)
+gufw
+ufw
