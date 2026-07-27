@@ -1,0 +1,14 @@
+#!/bin/sh
+# Quokka OS — ログイン時の効果音を再生する。
+# quokka-tweaks で選んだ好みのジャンルを ~/.config/quokka/login-sound に保存し、
+# それを参照する(未設定時は quokka-login を既定とする)。
+sleep 1
+
+CONF="$HOME/.config/quokka/login-sound"
+NAME="quokka-login"
+[ -f "$CONF" ] && NAME="$(cat "$CONF" 2>/dev/null)"
+
+FILE="/usr/share/sounds/quokka/${NAME}.ogg"
+[ -f "$FILE" ] || FILE="/usr/share/sounds/quokka/quokka-login.ogg"
+
+paplay "$FILE" 2>/dev/null || canberra-gtk-play -f "$FILE" 2>/dev/null || true

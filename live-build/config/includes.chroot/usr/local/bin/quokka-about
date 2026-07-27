@@ -1,0 +1,17 @@
+#!/bin/bash
+# Quokka OS について — ブランド情報・システム情報を表示するAboutパネル
+set -euo pipefail
+
+ICON=/usr/share/icons/quokka/logo.png
+
+OS_LINE="$( [ -f /etc/os-release ] && grep '^PRETTY_NAME=' /etc/os-release | cut -d= -f2 | tr -d '"' || echo 'Quokka OS' )"
+KERNEL="$(uname -r)"
+ARCH="$(uname -m)"
+DE="${XDG_CURRENT_DESKTOP:-XFCE}"
+UPTIME="$(uptime -p 2>/dev/null || echo '不明')"
+
+zenity --info \
+  --title="Quokka OSについて" \
+  --window-icon="$ICON" \
+  --width=380 \
+  --text="<span font='16' weight='bold'>QUOKKA OS</span>\n<span foreground='#5C7A8A'>Smile . Scan . Secure</span>\n\n<b>OS</b>       ${OS_LINE}\n<b>Kernel</b>   ${KERNEL} (${ARCH})\n<b>DE</b>       ${DE}\n<b>Uptime</b>   ${UPTIME}\n\n<span foreground='#5C7A8A'>Quokka OS Project — GPL-3.0 / 各種GitHubプロジェクトを利用</span>"

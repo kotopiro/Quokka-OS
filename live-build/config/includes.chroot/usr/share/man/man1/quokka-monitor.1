@@ -1,0 +1,22 @@
+.TH QUOKKA-MONITOR 1 "2026" "Quokka OS" "Quokka OS Manual"
+.SH 名前
+quokka-monitor \- 無線インターフェースのモニターモード切り替えツール(要root)
+.SH 書式
+.B quokka-monitor
+.I command
+[インターフェース]
+.SH コマンド
+.TP
+.B list
+無線インターフェース一覧を表示
+.TP
+.B start \fI<iface>\fR
+指定インターフェースをモニターモードにする
+.TP
+.B stop \fI<mon-iface>\fR
+モニターモードを解除する
+.TP
+.B status
+現在の状態を表示
+.SH 関連項目
+.BR iw (8)

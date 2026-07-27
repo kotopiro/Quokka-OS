@@ -1,0 +1,13 @@
+#!/bin/sh
+# Quokka OS — 選択済みのログイン効果音を再生する
+# quokka-tweaks の「サウンドを選ぶ」で選択した内容を反映する
+
+CONF="$HOME/.config/quokka/login-sound"
+SOUND_DIR="/usr/share/sounds/quokka"
+NAME="quokka-login"
+
+[ -f "$CONF" ] && NAME="$(cat "$CONF" 2>/dev/null)"
+[ -f "$SOUND_DIR/$NAME.ogg" ] || NAME="quokka-login"
+
+paplay "$SOUND_DIR/$NAME.ogg" 2>/dev/null || \
+  canberra-gtk-play -f "$SOUND_DIR/$NAME.ogg" 2>/dev/null || true

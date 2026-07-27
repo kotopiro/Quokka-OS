@@ -1,0 +1,3 @@
+#!/bin/sh
+# Quokka Wisdom — 隠れコマンド。クオッカが一言くれる。
+fortune quokka 2>/dev/null | cowsay -f quokka 2>/dev/null || echo "今日は機嫌が悪いらしい。また今度。"

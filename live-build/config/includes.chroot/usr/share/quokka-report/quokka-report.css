@@ -1,0 +1,68 @@
+/* Quokka Report — palette.md のブランドカラーをそのまま踏襲 */
+:root {
+  --quokka-bg: #000410;
+  --quokka-bg-elevated: #0A0F1E;
+  --quokka-bg-elevated-2: #111A2E;
+  --quokka-cyan: #00CFFE;
+  --quokka-cyan-dim: #0088AF;
+  --quokka-cyan-glow: #7BEFFF;
+  --quokka-text: #E8FBFF;
+  --quokka-text-muted: #5C7A8A;
+  --quokka-critical: #FF3B5C;
+  --quokka-warning: #FFB020;
+  --quokka-success: #39FF88;
+}
+
+body {
+  background: var(--quokka-bg);
+  color: var(--quokka-text);
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  color: var(--quokka-cyan);
+  text-shadow: 0 0 12px rgba(0, 207, 254, 0.35);
+  border-bottom: 1px solid var(--quokka-bg-elevated-2);
+  padding-bottom: 0.3em;
+}
+
+a { color: var(--quokka-cyan-glow); }
+
+code, pre {
+  background: var(--quokka-bg-elevated);
+  border: 1px solid var(--quokka-bg-elevated-2);
+  border-radius: 6px;
+  padding: 0.15em 0.4em;
+}
+pre { padding: 1em; overflow-x: auto; }
+
+blockquote {
+  border-left: 3px solid var(--quokka-cyan-dim);
+  margin-left: 0;
+  padding-left: 1em;
+  color: var(--quokka-text-muted);
+}
+
+table { border-collapse: collapse; width: 100%; }
+th, td {
+  border: 1px solid var(--quokka-bg-elevated-2);
+  padding: 0.5em 0.8em;
+  text-align: left;
+}
+th { background: var(--quokka-bg-elevated); color: var(--quokka-cyan); }
+
+.sev-critical { color: var(--quokka-critical); font-weight: bold; }
+.sev-high     { color: var(--quokka-critical); font-weight: bold; }
+.sev-medium   { color: var(--quokka-warning);  font-weight: bold; }
+.sev-low      { color: var(--quokka-success);  font-weight: bold; }
+.sev-info     { color: var(--quokka-cyan);     font-weight: bold; }
+
+hr {
+  border: none;
+  border-top: 1px solid var(--quokka-bg-elevated-2);
+  margin: 2.5em 0;
+}

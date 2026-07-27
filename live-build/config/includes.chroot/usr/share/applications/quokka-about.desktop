@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Quokka OSについて
+Name[en]=About Quokka OS
+Comment=Quokka OSのブランド情報・システム情報を表示
+Comment[en]=Show Quokka OS brand and system information
+Exec=quokka-about
+Icon=/usr/share/icons/quokka/logo.png
+Terminal=false
+Categories=Settings;System;
+StartupNotify=false

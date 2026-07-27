@@ -359,6 +359,16 @@ Kaliのオンボーディングも公式ドキュメントサイト(Kali Docs)�
 裏付けがある。今回作った2本はzenityベースの軽量ダイアログであり、
 同水準の作り込みではない。実機起動での見た目・動作は未確認</label></li>
 </ul>
+<h2 id="修正-github-actionsワークフローの構文エラー">修正: GitHub
+Actionsワークフローの構文エラー</h2>
+<p><code>.github/workflows/build.yml</code> の <code>if:</code> 条件式で
+<code>secrets.QUOKKA_GPG_PRIVATE_KEY != ''</code> を
+直接使っていたが、GitHub公式ドキュメント記載の通り
+<strong><code>secrets</code>コンテキストは<code>if:</code>条件式内では
+参照できない</strong>制約に引っかかっていた(<code>Unrecognized named-value: 'secrets'</code>)。
+job-level <code>env:</code> に <code>HAS_GPG_PRIVATE_KEY</code> /
+<code>HAS_GPG_KEY_ID</code> という真偽値を一度経由させ、
+<code>if:</code> 側はそちらを参照するように修正した。</p>
 
 </main>
 </body>

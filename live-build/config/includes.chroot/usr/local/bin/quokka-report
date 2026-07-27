@@ -1,0 +1,154 @@
+#!/bin/bash
+# Quokka Report — Quokka OS独自のペンテストレポート生成ツール。
+# Kali/ParrotはDradis/Faraday等の外部重量級ツールに頼るのが一般的だが、
+# ここでは依存を最小限(pandocのみ)にした軽量な自前ツールとして提供する。
+#
+# 使い方:
+#   quokka-report init <name>          新規レポートディレクトリを作成
+#   quokka-report add-finding <name>   対話式でfindings.mdに追記
+#   quokka-report build <name>         Markdown一式をブランド調HTMLに変換
+#   quokka-report list                 既存レポート一覧
+#
+# 正直な制約: Markdown→HTML変換はpandoc依存。pandoc未導入環境では
+# buildは失敗し、その旨を案内する(自前markdownパーサは実装していない)。
+
+set -euo pipefail
+
+REPORT_ROOT="${QUOKKA_REPORT_ROOT:-$HOME/quokka-reports}"
+CSS_ASSET="/usr/share/quokka-report/quokka-report.css"
+
+die() { echo "quokka-report: エラー: $*" >&2; exit 1; }
+
+usage() {
+  cat <<EOF
+Quokka Report - Quokka OS 独自のペンテストレポート生成ツール
+
+使い方:
+  quokka-report init <name>          新規レポートディレクトリを作成
+  quokka-report add-finding <name>   対話式でfindings.mdに追記
+  quokka-report add-evidence <name> <file>  ファイルをevidence/にコピー
+  quokka-report build <name>         Markdown一式をブランド調HTMLに変換
+  quokka-report list                 既存レポート一覧
+EOF
+}
+
+cmd_init() {
+  local name="${1:?レポート名を指定してください}"
+  local dir="$REPORT_ROOT/$name"
+  [[ -e "$dir" ]] && die "既に存在します: $dir"
+
+  mkdir -p "$dir/evidence"
+  cp "$CSS_ASSET" "$dir/quokka-report.css" 2>/dev/null || true
+
+  cat > "$dir/report.md" <<EOF
+# ${name} — ペンテスト報告書
+
+| 項目 | 内容 |
+|---|---|
+| 対象 | (記入) |
+| 実施期間 | $(date +%Y-%m-%d) 〜 (記入) |
+| 実施者 | (記入) |
+| スコープ | (記入) |
+
+## エグゼクティブサマリー
+
+(記入)
+
+---
+EOF
+
+  cat > "$dir/findings.md" <<'EOF'
+## 発見事項
+
+<!-- quokka-report add-finding で追記されます -->
+EOF
+
+  echo "作成しました: $dir"
+  echo "  $dir/report.md    — 概要・スコープを編集"
+  echo "  $dir/findings.md  — quokka-report add-finding で追記、または直接編集"
+  echo "  $dir/evidence/    — スクリーンショット・ログを保存"
+}
+
+cmd_add_finding() {
+  local name="${1:?レポート名を指定してください}"
+  local dir="$REPORT_ROOT/$name"
+  [[ -d "$dir" ]] || die "見つかりません: $dir (先に init してください)"
+
+  echo "--- 新しい発見事項を追加 ---"
+  read -rp "タイトル: " title
+  echo "深刻度を選択: 1) Critical 2) High 3) Medium 4) Low 5) Info"
+  read -rp "番号: " sev_num
+  case "$sev_num" in
+    1) sev="Critical"; sev_class="sev-critical" ;;
+    2) sev="High";     sev_class="sev-high" ;;
+    3) sev="Medium";   sev_class="sev-medium" ;;
+    4) sev="Low";      sev_class="sev-low" ;;
+    *) sev="Info";     sev_class="sev-info" ;;
+  esac
+  read -rp "対象(ホスト/URL等): " target
+  echo "詳細説明(終了は空行のみの行でEnter):"
+  description=""
+  while IFS= read -rp "> " line; do
+    [[ -z "$line" ]] && break
+    description+="$line"$'\n'
+  done
+  read -rp "証跡ファイル(evidence/内、任意・空欄可): " evidence
+
+  {
+    echo ""
+    echo "### ${title}"
+    echo ""
+    echo "**深刻度:** <span class=\"${sev_class}\">${sev}</span>  "
+    echo "**対象:** ${target}"
+    echo ""
+    echo "${description}"
+    [[ -n "$evidence" ]] && echo "証跡: \`evidence/${evidence}\`"
+    echo ""
+    echo "---"
+  } >> "$dir/findings.md"
+
+  echo "追加しました: ${title} (${sev})"
+}
+
+cmd_build() {
+  local name="${1:?レポート名を指定してください}"
+  local dir="$REPORT_ROOT/$name"
+  [[ -d "$dir" ]] || die "見つかりません: $dir"
+  command -v pandoc >/dev/null 2>&1 || \
+    die "pandocが見つかりません。'sudo apt install pandoc' を実行してください"
+
+  local css="$dir/quokka-report.css"
+  [[ -f "$css" ]] || css="$CSS_ASSET"
+
+  pandoc "$dir/report.md" "$dir/findings.md" \
+    --standalone --css="$(basename "$css")" \
+    --metadata title="${name} — Quokka Report" \
+    -o "$dir/report.html"
+
+  echo "生成しました: $dir/report.html"
+}
+
+cmd_add_evidence() {
+  local name="${1:?レポート名を指定してください}"
+  local file="${2:?コピーするファイルを指定してください}"
+  local dir="$REPORT_ROOT/$name"
+  [[ -d "$dir" ]] || die "見つかりません: $dir (先に init してください)"
+  [[ -f "$file" ]] || die "ファイルが見つかりません: $file"
+
+  cp "$file" "$dir/evidence/"
+  echo "証跡に追加しました: $dir/evidence/$(basename "$file")"
+}
+
+cmd_list() {
+  [[ -d "$REPORT_ROOT" ]] || { echo "(レポートはまだありません)"; return; }
+  ls -1 "$REPORT_ROOT" 2>/dev/null || echo "(レポートはまだありません)"
+}
+
+case "${1:-}" in
+  init)        shift; cmd_init "$@" ;;
+  add-finding) shift; cmd_add_finding "$@" ;;
+  add-evidence) shift; cmd_add_evidence "$@" ;;
+  build)       shift; cmd_build "$@" ;;
+  list)        cmd_list ;;
+  *)           usage; exit 1 ;;
+esac

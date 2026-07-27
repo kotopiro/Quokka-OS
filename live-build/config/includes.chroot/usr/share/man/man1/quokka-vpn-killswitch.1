@@ -1,0 +1,29 @@
+.TH QUOKKA-VPN-KILLSWITCH 1 "2026" "Quokka OS" "Quokka OS Manual"
+.SH 名前
+quokka-vpn-killswitch \- nftablesベースのVPNキルスイッチ(要root)
+.SH 書式
+.B quokka-vpn-killswitch enable
+.B --uplink
+.I <iface>
+.B --endpoint
+.I <host-or-ip>
+[\fB--vpn-if\fR \fItun0\fR] [\fB--port\fR \fI1194\fR] [\fB--proto\fR \fIudp|tcp\fR] [\fB--allow-lan\fR]
+.br
+.B quokka-vpn-killswitch disable
+.br
+.B quokka-vpn-killswitch status
+.SH 説明
+VPN接続時、VPNインターフェース経由以外の通信を遮断することで、
+VPNが切断された際の生トラフィック漏洩(キルスイッチ)を防ぐ。
+.SH オプション
+.TP
+.B --uplink \fI<iface>\fR
+ISP側の物理/無線インターフェース(必須)
+.TP
+.B --endpoint \fI<host-or-ip>\fR
+VPNサーバーのアドレス(必須)
+.TP
+.B --allow-lan
+ローカルネットワーク宛の通信を許可する
+.SH 関連項目
+.BR quokka-fire (1)

@@ -1,0 +1,29 @@
+#!/bin/sh
+# Quokka Actions(Thunar右クリックメニュー)から呼ばれる。
+# 選択したファイルを quokka-report のevidenceフォルダにコピーする。
+set -eu
+
+FILE="${1:?ファイルを指定してください}"
+ICON=/usr/share/icons/quokka/logo.png
+
+REPORT_ROOT="${QUOKKA_REPORT_ROOT:-$HOME/quokka-reports}"
+EXISTING="$(ls -1 "$REPORT_ROOT" 2>/dev/null || true)"
+
+if [ -z "$EXISTING" ]; then
+    zenity --error --title="Quokka Report" --window-icon="$ICON" \
+        --text="レポートがまだありません。先にターミナルで\n\n  quokka-report init <案件名>\n\nを実行してください。"
+    exit 1
+fi
+
+NAME=$(printf '%s\n' "$EXISTING" | zenity --list --title="証跡の追加先を選択" \
+    --window-icon="$ICON" --width=380 --height=300 \
+    --column="レポート名" --hide-header 2>/dev/null || true)
+
+[ -n "$NAME" ] || exit 0
+
+if quokka-report add-evidence "$NAME" "$FILE"; then
+    zenity --info --title="Quokka Report" --window-icon="$ICON" \
+        --text="証跡に追加しました:\n$(basename "$FILE") → ${NAME}"
+else
+    zenity --error --title="Quokka Report" --window-icon="$ICON" --text="追加に失敗しました。"
+fi

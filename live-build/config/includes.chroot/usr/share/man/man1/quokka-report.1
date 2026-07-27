@@ -1,0 +1,31 @@
+.TH QUOKKA-REPORT 1 "2026" "Quokka OS" "Quokka OS Manual"
+.SH 名前
+quokka-report \- Quokka OS独自のペンテストレポート生成ツール
+.SH 書式
+.B quokka-report
+.I command
+[引数...]
+.SH コマンド
+.TP
+.B init \fI<name>\fR
+新規レポートディレクトリを ~/quokka-reports/\fI<name>\fR に作成する
+.TP
+.B add-finding \fI<name>\fR
+対話式で findings.md に発見事項を追記する
+.TP
+.B add-evidence \fI<name>\fR \fI<file>\fR
+指定したファイルを evidence/ フォルダにコピーする
+.TP
+.B build \fI<name>\fR
+report.md / findings.md をブランド調のHTMLレポートに変換する(pandoc使用)
+.TP
+.B list
+既存レポートの一覧を表示する
+.SH 例
+.nf
+quokka-report init acme-corp-2026
+quokka-report add-finding acme-corp-2026
+quokka-report build acme-corp-2026
+.fi
+.SH 関連項目
+.BR pandoc (1)

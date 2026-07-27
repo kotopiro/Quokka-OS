@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Quokka OS</title>
+<style>
+  :root {
+    --quokka-bg: #000410;
+    --quokka-bg-elevated: #0A0F1E;
+    --quokka-bg-elevated-2: #111A2E;
+    --quokka-cyan: #00CFFE;
+    --quokka-cyan-dim: #0088AF;
+    --quokka-cyan-glow: #7BEFFF;
+    --quokka-text: #E8FBFF;
+    --quokka-text-muted: #5C7A8A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at 50% 0%, var(--quokka-bg-elevated), var(--quokka-bg) 60%);
+    color: var(--quokka-text);
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4rem 1.5rem;
+  }
+  h1 {
+    color: var(--quokka-cyan);
+    text-shadow: 0 0 18px rgba(0, 207, 254, 0.45);
+    letter-spacing: 0.08em;
+    font-size: 2rem;
+    margin-bottom: 0.2em;
+  }
+  .tagline { color: var(--quokka-text-muted); margin-bottom: 2.5rem; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    max-width: 780px;
+  }
+  a.card {
+    display: block;
+    background: var(--quokka-bg-elevated);
+    border: 1px solid var(--quokka-bg-elevated-2);
+    border-radius: 10px;
+    padding: 1.1rem 1.3rem;
+    color: var(--quokka-text);
+    text-decoration: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  a.card:hover {
+    border-color: var(--quokka-cyan);
+    box-shadow: 0 0 16px rgba(0, 207, 254, 0.25);
+  }
+  a.card .label { color: var(--quokka-cyan); font-weight: bold; display: block; margin-bottom: 0.3em; }
+  a.card .desc { color: var(--quokka-text-muted); font-size: 0.85em; }
+  footer { margin-top: 3rem; color: var(--quokka-text-muted); font-size: 0.8em; }
+</style>
+</head>
+<body>
+  <h1>QUOKKA OS</h1>
+  <div class="tagline">Smile . Scan . Secure</div>
+
+  <div class="grid">
+    <a class="card" href="file:///usr/share/doc/quokka-os/site/index.html">
+      <span class="label">ドキュメントサイト</span>
+      <span class="desc">同梱ツール・使い方の一覧</span>
+    </a>
+    <a class="card" href="file:///usr/share/doc/quokka-os/site/tool-selection.html">
+      <span class="label">収録ツール一覧</span>
+      <span class="desc">カテゴリ別ツール選定方針</span>
+    </a>
+    <a class="card" href="file:///usr/share/doc/quokka-os/site/pentest-config.html">
+      <span class="label">Pentest設定</span>
+      <span class="desc">monitor mode / VPN kill switch</span>
+    </a>
+    <a class="card" href="file:///usr/share/doc/quokka-os/site/roadmap.html">
+      <span class="label">ロードマップ</span>
+      <span class="desc">開発の進捗状況</span>
+    </a>
+  </div>
+
+  <footer>Quokka OS Project</footer>
+</body>
+</html>

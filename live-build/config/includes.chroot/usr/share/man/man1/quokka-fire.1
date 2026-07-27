@@ -1,0 +1,29 @@
+.TH QUOKKA-FIRE 1 "2026" "Quokka OS" "Quokka OS Manual"
+.SH 名前
+quokka-fire \- システム全体のTor強制ルーティングツール(要root)
+.SH 書式
+.B quokka-fire
+.I command
+.SH コマンド
+.TP
+.B start
+全通信をTor経由に強制ルーティング(nftablesでフェイルクローズ)
+.TP
+.B stop
+通常状態に復帰
+.TP
+.B status
+現在の状態とTor接続を確認
+.TP
+.B change
+Torの出口ノード(回線)を変更(NEWNYM)
+.TP
+.B panic
+即座に通信遮断+復帰(緊急用)
+.SH 備考
+GUIフロントエンドとして
+.BR quokka-fire-gui (1)
+がある。特権操作は pkexec/sudo が必要。
+.SH 関連項目
+.BR quokka-fire-gui (1),
+.BR quokka-vpn-killswitch (1)

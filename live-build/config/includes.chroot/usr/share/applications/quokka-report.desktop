@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Quokka Report
+Name[ja]=Quokka Report(レポート作成)
+Comment=Quokka OS's own pentest report generator
+Comment[ja]=Quokka OS独自のペンテストレポート生成ツール
+Exec=xfce4-terminal --title=Quokka-Report -e quokka-report
+Icon=/usr/share/icons/quokka/logo.png
+Terminal=false
+Categories=System;Utility;Security;
+StartupNotify=false

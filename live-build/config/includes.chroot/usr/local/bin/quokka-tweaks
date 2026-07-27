@@ -14,10 +14,14 @@ while true; do
         --width=520 --height=420 \
         --column="項目" --column="説明" --hide-header \
         "profile"     "現在のビルドプロファイル(standard/full)を表示" \
+        "about"       "Quokka OSについて(ロゴ・システム情報)" \
+        "system-tools" "Timeshift・Synaptic・GUFWを開く" \
         "undercover"  "Quokka Undercover(外見偽装)をトグル" \
         "monitor-list" "無線インターフェース一覧を表示(iw dev)" \
         "vpn-status"  "VPN kill switchの状態を表示" \
-        "wallpaper"   "壁紙をQuokkaデフォルトに戻す" \
+        "wallpaper"   "壁紙を切り替える(3種類)" \
+        "usbguard"    "USBGuardに今のUSB機器構成を許可登録する" \
+        "sound"       "ログイン効果音のジャンルを選ぶ(全6種)" \
         "docs"        "ドキュメントサイトを開く" \
         "quit"        "閉じる" \
         2>/dev/null || echo "quit")
@@ -26,6 +30,24 @@ while true; do
         profile)
             zenity --info --title="ビルドプロファイル" --window-icon="$ICON" \
                 --text="$( [ -f /etc/os-release ] && grep -i quokka /etc/os-release || echo '/etc/os-release からQuokka情報を取得できませんでした' )"
+            ;;
+        about)
+            quokka-about || true
+            ;;
+        system-tools)
+            tool_choice=$(zenity --list \
+                --title="システムツール" --window-icon="$ICON" \
+                --width=420 --height=260 \
+                --column="ツール" --column="説明" --hide-header \
+                "timeshift" "システム復元ポイントの作成・復元" \
+                "synaptic"  "GUIパッケージ管理(apt)" \
+                "gufw"      "ファイアウォール設定(ufwのGUI、既定は無効)" \
+                2>/dev/null || echo "")
+            case "$tool_choice" in
+                timeshift) pkexec timeshift-gtk 2>/dev/null || timeshift-launcher 2>/dev/null || true ;;
+                synaptic)  pkexec synaptic 2>/dev/null || true ;;
+                gufw)      pkexec gufw 2>/dev/null || true ;;
+            esac
             ;;
         undercover)
             quokka-undercover toggle || true
@@ -45,9 +67,54 @@ while true; do
             rm -f "$TMP"
             ;;
         wallpaper)
-            xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image \
-                -s /usr/share/backgrounds/quokka/quokka-wallpaper-1920x1080.png 2>/dev/null || true
-            zenity --info --title="壁紙" --window-icon="$ICON" --text="壁紙をQuokkaデフォルトに戻しました(反映されない場合は一度ログアウト/インしてください)。"
+            wp_choice=$(zenity --list \
+                --title="壁紙を選択" --window-icon="$ICON" \
+                --width=420 --height=260 \
+                --column="壁紙" --column="説明" --hide-header \
+                "default" "標準(ロゴ由来のダークネイビー)" \
+                "circuit" "回路線パターン" \
+                "gradient" "シンプルなグラデーション" \
+                2>/dev/null || echo "")
+            case "$wp_choice" in
+                circuit)  file="quokka-wallpaper-circuit-1920x1080.png" ;;
+                gradient) file="quokka-wallpaper-gradient-1920x1080.png" ;;
+                default)  file="quokka-wallpaper-1920x1080.png" ;;
+                *) file="" ;;
+            esac
+            if [ -n "$file" ]; then
+                xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image \
+                    -s "/usr/share/backgrounds/quokka/$file" 2>/dev/null || true
+                zenity --info --title="壁紙" --window-icon="$ICON" --text="壁紙を切り替えました(反映されない場合は一度ログアウト/インしてください)。"
+            fi
+            ;;
+        usbguard)
+            if zenity --question --title="USBGuard" --window-icon="$ICON" \
+                --text="現在接続中のUSB機器をすべて「許可」として登録します。\n(この後に挿す未知のUSB機器はブロックされます)\n\n続けますか?" 2>/dev/null; then
+                if pkexec sh -c 'usbguard generate-policy > /etc/usbguard/rules.conf && systemctl restart usbguard' 2>/dev/null; then
+                    zenity --info --title="USBGuard" --window-icon="$ICON" --text="登録しました。"
+                else
+                    zenity --error --title="USBGuard" --window-icon="$ICON" --text="失敗しました。USBGuardが導入されていない可能性があります。"
+                fi
+            fi
+            ;;
+        sound)
+            mkdir -p "$HOME/.config/quokka"
+            snd_choice=$(zenity --list \
+                --title="ログイン効果音を選択" --window-icon="$ICON" \
+                --width=440 --height=320 \
+                --column="ジャンル" --column="説明" --hide-header \
+                "quokka-login" "標準(2音チャイム)" \
+                "chiptune"     "8bit/チップチューン" \
+                "orchestral"   "オーケストラ風の鐘の音" \
+                "synth"        "シンセ/EDM風の上昇音" \
+                "rock"         "ロック風パワーコード" \
+                "ambient"      "アンビエント(静かなパッド音)" \
+                2>/dev/null || echo "")
+            if [ -n "$snd_choice" ]; then
+                echo "$snd_choice" > "$HOME/.config/quokka/login-sound"
+                paplay "/usr/share/sounds/quokka/${snd_choice}.ogg" 2>/dev/null || true
+                zenity --info --title="効果音" --window-icon="$ICON" --text="次回ログインから反映されます(今のはプレビューです)。"
+            fi
             ;;
         quit|*)
             break

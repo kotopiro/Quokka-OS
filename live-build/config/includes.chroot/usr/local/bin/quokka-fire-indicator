@@ -1,0 +1,19 @@
+#!/bin/bash
+# Quokka Fire Indicator — xfce4-panelのGeneric Monitor(genmon)用。
+# パネルにQuokka Fireの有効/無効を表示し、クリックでGUIを開く。
+STATE_FILE="/var/lib/quokka-fire/state"
+
+if [ -f "$STATE_FILE" ] && grep -q '^active$' "$STATE_FILE" 2>/dev/null; then
+  TEXT="Fire: 有効"
+  ICON="/usr/share/icons/quokka/logo.png"
+else
+  TEXT="Fire: 無効"
+  ICON="/usr/share/icons/quokka/logo-gray.png"
+fi
+
+cat <<EOF
+<txt>${TEXT}</txt>
+<tool>クリックでQuokka Fireを開く</tool>
+<img>${ICON}</img>
+<click>quokka-fire-gui &amp;</click>
+EOF

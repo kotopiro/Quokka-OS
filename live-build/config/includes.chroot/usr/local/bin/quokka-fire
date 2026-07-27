@@ -1,0 +1,131 @@
+#!/bin/sh
+# Quokka Fire — システム全体の通信をTor経由に強制するツール
+# (Parrot OSの AnonSurf 相当。quokka-vpn-killswitch と同じnftablesの作法に揃えた実装)
+set -eu
+
+TABLE="quokka_fire"
+TOR_UID="$(id -u debian-tor 2>/dev/null || id -u tor 2>/dev/null || echo 111)"
+TRANS_PORT="9040"
+DNS_PORT="5353"
+STATE_DIR="/var/lib/quokka-fire"
+STATE_FILE="$STATE_DIR/state"
+TORRC="/etc/tor/torrc"
+TORRC_MARK_BEGIN="# --- quokka-fire begin ---"
+TORRC_MARK_END="# --- quokka-fire end ---"
+
+usage() {
+    cat <<USAGE
+Usage:
+  quokka-fire start    システム全体の通信をTor経由に強制
+  quokka-fire stop     通常状態に復帰
+  quokka-fire status   現在の状態とTor接続を確認
+  quokka-fire change   Torの出口ノード(回線)を変更 (NEWNYM)
+  quokka-fire panic    即座に通信遮断+復帰(緊急用)
+USAGE
+}
+
+require_root() {
+    [ "$(id -u)" -eq 0 ] || { echo "root権限で実行してください (pkexec/sudo)" >&2; exit 1; }
+}
+
+is_active() {
+    [ -f "$STATE_FILE" ] && grep -q '^active$' "$STATE_FILE" 2>/dev/null
+}
+
+configure_torrc() {
+    if ! grep -q "$TORRC_MARK_BEGIN" "$TORRC" 2>/dev/null; then
+        cat >> "$TORRC" <<EOF
+
+$TORRC_MARK_BEGIN
+VirtualAddrNetworkIPv4 10.192.0.0/10
+AutomapHostsOnResolve 1
+TransPort $TRANS_PORT
+DNSPort $DNS_PORT
+SocksPort 9050
+ControlPort 9051
+CookieAuthentication 1
+$TORRC_MARK_END
+EOF
+    fi
+    systemctl restart tor 2>/dev/null || service tor restart 2>/dev/null || true
+    sleep 1
+}
+
+start_fire() {
+    require_root
+    mkdir -p "$STATE_DIR"
+    is_active && { echo "既に有効です"; exit 0; }
+
+    configure_torrc
+
+    nft delete table inet "$TABLE" >/dev/null 2>&1 || true
+    nft add table inet "$TABLE"
+    nft 'add chain inet' "$TABLE" output '{ type nat hook output priority -100; }'
+    nft 'add chain inet' "$TABLE" filter '{ type filter hook output priority 0; policy drop; }'
+
+    # NAT: DNS/TCPをTorのポートへリダイレクト(Torプロセス自身は除外)
+    nft add rule inet "$TABLE" output meta skuid "$TOR_UID" return
+    nft add rule inet "$TABLE" output udp dport 53 redirect to :"$DNS_PORT"
+    nft add rule inet "$TABLE" output tcp flags syn redirect to :"$TRANS_PORT"
+
+    # フィルタ: ループバック・Torプロセス以外はフェイルクローズ
+    nft add rule inet "$TABLE" filter oif lo accept
+    nft add rule inet "$TABLE" filter meta skuid "$TOR_UID" accept
+
+    echo "active" > "$STATE_FILE"
+    echo "Quokka Fire: 有効化しました(全通信をTor経由に強制)"
+}
+
+stop_fire() {
+    require_root
+    nft delete table inet "$TABLE" >/dev/null 2>&1 || true
+    echo "inactive" > "$STATE_FILE" 2>/dev/null || true
+    echo "Quokka Fire: 無効化しました"
+}
+
+status_fire() {
+    if is_active; then
+        echo "Quokka Fire: 有効"
+    else
+        echo "Quokka Fire: 無効"
+    fi
+    if command -v curl >/dev/null 2>&1; then
+        printf 'Tor接続確認: '
+        if curl -s --max-time 8 --socks5-hostname 127.0.0.1:9050 \
+                https://check.torproject.org/api/ip 2>/dev/null | grep -q '"IsTor":true'; then
+            echo "OK"
+        else
+            echo "未確認"
+        fi
+    fi
+}
+
+change_identity() {
+    require_root
+    is_active || { echo "Quokka Fireが有効ではありません" >&2; exit 1; }
+    if command -v nc >/dev/null 2>&1; then
+        printf 'AUTHENTICATE\r\nSIGNAL NEWNYM\r\nQUIT\r\n' | nc -w 3 127.0.0.1 9051 >/dev/null 2>&1 || true
+    fi
+    echo "回線を変更しました"
+}
+
+panic_fire() {
+    require_root
+    nft delete table inet "$TABLE" >/dev/null 2>&1 || true
+    nft add table inet "$TABLE" >/dev/null 2>&1 || true
+    nft 'add chain inet' "$TABLE" filter '{ type filter hook output priority 0; policy drop; }' >/dev/null 2>&1 || true
+    sync
+    nft delete table inet "$TABLE" >/dev/null 2>&1 || true
+    echo "inactive" > "$STATE_FILE" 2>/dev/null || true
+    paplay /usr/share/sounds/quokka/panic.ogg 2>/dev/null || true
+    echo "Quokka Fire: パニック処理完了(通信遮断後、復帰しました)"
+}
+
+case "${1:-}" in
+    start)  start_fire ;;
+    stop)   stop_fire ;;
+    status) status_fire ;;
+    change) change_identity ;;
+    panic)  panic_fire ;;
+    *) usage >&2; exit 1 ;;
+esac

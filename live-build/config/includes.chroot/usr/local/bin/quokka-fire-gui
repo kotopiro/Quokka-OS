@@ -1,0 +1,117 @@
+#!/usr/bin/env python3
+"""Quokka Fire GUI — システム全体Tor強制ルーティングツールのGUIフロントエンド。
+バックエンドの特権操作(start/stop/change/panic)は pkexec 経由で
+/usr/local/bin/quokka-fire を呼び出す。"""
+
+import subprocess
+import gi
+
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GLib, Gdk
+
+CSS = b"""
+window { background-color: #0A0F1E; }
+label { color: #E7EAF0; }
+.title { font-size: 18px; font-weight: 700; color: #4C8DFF; }
+.status-on { color: #39FF88; font-weight: 700; }
+.status-off { color: #8A93A6; font-weight: 700; }
+button { border-radius: 8px; padding: 8px 14px; }
+button.primary { background-color: #4C8DFF; color: #ffffff; }
+button.danger { background-color: #FF3B5C; color: #ffffff; }
+"""
+
+
+def run_privileged(*args):
+    try:
+        subprocess.run(["pkexec", "/usr/local/bin/quokka-fire", *args], check=False)
+    except Exception as e:
+        print(f"quokka-fire error: {e}")
+
+
+def get_status():
+    try:
+        out = subprocess.run(
+            ["/usr/local/bin/quokka-fire", "status"],
+            capture_output=True, text=True, timeout=10
+        ).stdout
+        active = "有効" in out.splitlines()[0] if out else False
+        tor_ok = "OK" in out
+        return active, tor_ok
+    except Exception:
+        return False, False
+
+
+class QuokkaFireWindow(Gtk.Window):
+    def __init__(self):
+        super().__init__(title="Quokka Fire")
+        self.set_default_size(360, 280)
+        self.set_resizable(False)
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
+        box.set_border_width(24)
+        self.add(box)
+
+        title = Gtk.Label(label="QUOKKA FIRE")
+        title.get_style_context().add_class("title")
+        box.pack_start(title, False, False, 0)
+
+        subtitle = Gtk.Label(label="システム全体のTor強制ルーティング")
+        box.pack_start(subtitle, False, False, 0)
+
+        self.status_label = Gtk.Label(label="状態を確認中...")
+        box.pack_start(self.status_label, False, False, 10)
+
+        self.toggle_btn = Gtk.Button(label="有効にする")
+        self.toggle_btn.get_style_context().add_class("primary")
+        self.toggle_btn.connect("clicked", self.on_toggle)
+        box.pack_start(self.toggle_btn, False, False, 0)
+
+        change_btn = Gtk.Button(label="回線を変更 (New Identity)")
+        change_btn.connect("clicked", lambda w: run_privileged("change"))
+        box.pack_start(change_btn, False, False, 0)
+
+        panic_btn = Gtk.Button(label="パニック(即座に遮断)")
+        panic_btn.get_style_context().add_class("danger")
+        panic_btn.connect("clicked", self.on_panic)
+        box.pack_start(panic_btn, False, False, 0)
+
+        self.refresh_status()
+        GLib.timeout_add_seconds(5, self.refresh_status)
+
+    def refresh_status(self):
+        active, tor_ok = get_status()
+        if active:
+            text = "● 有効" + ("(Tor接続確認OK)" if tor_ok else "(Tor接続 未確認)")
+            self.status_label.set_markup(f'<span foreground="#39FF88">{text}</span>')
+            self.toggle_btn.set_label("無効にする")
+        else:
+            self.status_label.set_markup('<span foreground="#8A93A6">● 無効</span>')
+            self.toggle_btn.set_label("有効にする")
+        return True
+
+    def on_toggle(self, widget):
+        active, _ = get_status()
+        run_privileged("stop" if active else "start")
+        GLib.timeout_add(1500, self.refresh_status)
+
+    def on_panic(self, widget):
+        run_privileged("panic")
+        GLib.timeout_add(1500, self.refresh_status)
+
+
+def main():
+    screen = Gdk.Screen.get_default()
+    provider = Gtk.CssProvider()
+    provider.load_from_data(CSS)
+    Gtk.StyleContext.add_provider_for_screen(
+        screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+    )
+
+    win = QuokkaFireWindow()
+    win.connect("destroy", Gtk.main_quit)
+    win.show_all()
+    Gtk.main()
+
+
+if __name__ == "__main__":
+    main()

@@ -24,6 +24,9 @@ choice=$(zenity --list \
     "monitor"     "モニターモード切替コマンドの使い方を見る" \
     "vpn"         "VPN kill switchの使い方を見る" \
     "undercover"  "Quokka Undercoverを試す(外見偽装トグル)" \
+    "report"      "Quokka Report(独自レポート生成ツール)の使い方を見る" \
+    "systools"    "Timeshift・Synaptic・GUFWについて" \
+    "fire"        "Quokka Fire(Tor強制ルーティング)を開く" \
     "close"       "閉じる(次回は表示しない)" \
     2>/dev/null || true)
 
@@ -43,6 +46,15 @@ case "$choice" in
         ;;
     undercover)
         quokka-undercover toggle || true
+        ;;
+    report)
+        zenity --info --title="Quokka Report の使い方" --window-icon="$ICON" --text="ターミナルで:\n\n  quokka-report init &lt;案件名&gt;\n  quokka-report add-finding &lt;案件名&gt;\n  quokka-report build &lt;案件名&gt;\n\nQuokka OS独自のブランド調HTMLレポート生成ツールです(pandoc使用)。"
+        ;;
+    systools)
+        zenity --info --title="システムツール" --window-icon="$ICON" --text="Timeshift  — システムの復元ポイントを作成・復元できます\nSynaptic   — GUIでパッケージの検索・インストール・削除\nGUFW       — ファイアウォール設定(既定では無効。有効化は自己責任で)\n\nアプリケーションメニュー、または quokka-tweaks の「Timeshift・Synaptic・GUFWを開く」から起動できます。"
+        ;;
+    fire)
+        quokka-fire-gui &
         ;;
     *)
         ;;

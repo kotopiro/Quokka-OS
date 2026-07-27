@@ -1,0 +1,13 @@
+#!/bin/sh
+# Quokka Actions(Thunar右クリックメニュー)から呼ばれる。
+# 選択したファイルのSHA256ハッシュを計算して表示する。
+set -eu
+
+FILE="${1:?ファイルを指定してください}"
+ICON=/usr/share/icons/quokka/logo.png
+
+HASH="$(sha256sum "$FILE" | awk '{print $1}')"
+
+zenity --info --title="SHA256" --window-icon="$ICON" \
+    --width=520 \
+    --text="$(basename "$FILE")\n\n${HASH}"
