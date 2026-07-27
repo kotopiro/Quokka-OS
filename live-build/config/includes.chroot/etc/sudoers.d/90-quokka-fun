@@ -1,0 +1,3 @@
+# Quokka OS — 遊び心: sudoのパスワード間違い時にジョークを言わせる古典機能
+# (sudoの正式なオプション。実害なし、面白いだけ)
+Defaults    insults

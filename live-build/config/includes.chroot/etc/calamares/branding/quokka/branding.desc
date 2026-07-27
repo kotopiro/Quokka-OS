@@ -35,6 +35,6 @@ slideshowAPI: 2
 style:
    sidebarBackground:     "#0A0F1E"
    sidebarText:            "#E8FBFF"
-   sidebarTextSelect:     "#00CFFE"
+   sidebarTextSelect:     "#4C8DFF"
    sidebarTextHighlight:  "#111A2E"
-   sidebarTextCurrent:    "#00CFFE"
+   sidebarTextCurrent:    "#4C8DFF"

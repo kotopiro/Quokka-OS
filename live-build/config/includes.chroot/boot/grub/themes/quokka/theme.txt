@@ -19,7 +19,7 @@ terminal-font: "Terminal Regular 16"
 + label {
     id = "title"
     text = "QUOKKA OS"
-    color = "#00CFFE"
+    color = "#4C8DFF"
     align = "center"
     top = 21%
     font = "Terminal Bold 22"
@@ -35,7 +35,7 @@ terminal-font: "Terminal Regular 16"
     item_spacing = 4
 
     item_color = "#5C7A8A"
-    selected_item_color = "#00CFFE"
+    selected_item_color = "#4C8DFF"
 
     item_font = "Terminal Regular 14"
     selected_item_font = "Terminal Bold 14"
@@ -57,7 +57,7 @@ terminal-font: "Terminal Regular 16"
     height = 18
     font = "Terminal Regular 12"
     text_color = "#5C7A8A"
-    fg_color = "#00CFFE"
+    fg_color = "#4C8DFF"
     bg_color = "#0A0F1E"
     border_color = "#0088AF"
     text = "@TIMEOUT_NOTIFICATION_LONG@"

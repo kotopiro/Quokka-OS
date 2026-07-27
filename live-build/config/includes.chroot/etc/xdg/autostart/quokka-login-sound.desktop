@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Quokka Login Sound
+Comment=Quokka OS のログインチャイムを再生
+Exec=quokka-login-sound
+X-GNOME-Autostart-enabled=true
+NoDisplay=true

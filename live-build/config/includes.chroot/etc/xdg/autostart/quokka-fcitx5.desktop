@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Fcitx5
+Comment=日本語入力(IME)を起動
+Exec=fcitx5 -d
+X-GNOME-Autostart-enabled=true
+NoDisplay=true
