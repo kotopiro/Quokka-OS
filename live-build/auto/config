@@ -53,14 +53,8 @@ export QUOKKA_PROFILE="$PROFILE"
 printf '==> QUOKKA_PROFILE=%s\n' "$QUOKKA_PROFILE"
 
 lb config noauto \
-    --mode debian \
     --distribution bookworm \
     --archive-areas "main contrib non-free non-free-firmware" \
-    --parent-mirror-bootstrap "http://deb.debian.org/debian/" \
-    --parent-mirror-binary "http://deb.debian.org/debian/" \
-    --mirror-bootstrap "http://deb.debian.org/debian/" \
-    --mirror-chroot "http://deb.debian.org/debian/" \
-    --mirror-binary "http://deb.debian.org/debian/" \
     --binary-images iso-hybrid \
     --bootappend-live "boot=live components quiet splash" \
     --bootappend-install "auto=true priority=critical quiet" \
@@ -72,4 +66,3 @@ lb config noauto \
     --debian-installer-gui true \
     --win32-loader false \
     "$@"
-
