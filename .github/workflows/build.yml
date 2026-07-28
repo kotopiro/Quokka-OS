@@ -82,7 +82,7 @@ jobs:
         # ここで明示的に auto/config を実行し、config/ を必ず再生成する。
         working-directory: live-build
         run: |
-          sudo --preserve-env=QUOKKA_PROFILE ./auto/config
+          sudo --preserve-env=QUOKKA_PROFILE sh ./auto/config
           echo "--- 生成された config/bootstrap の中身 ---"
           cat config/bootstrap 2>/dev/null || echo "(config/bootstrap が見当たりません)"
 
