@@ -74,6 +74,18 @@ jobs:
       - name: Show selected profile
         run: echo "QUOKKA_PROFILE=${QUOKKA_PROFILE}"
 
+      - name: Generate live-build config (auto/config)
+        # 正直な経緯: live-build/config/ が既にリポジトリにコミットされているため、
+        # lb build はそれを「設定済み」とみなし auto/config を一度も実行しない。
+        # そのため auto/config 内の --distribution bookworm 等が反映されず、
+        # live-build側の古いデフォルト(Ubuntu precise)にフォールバックしていた。
+        # ここで明示的に auto/config を実行し、config/ を必ず再生成する。
+        working-directory: live-build
+        run: |
+          sudo --preserve-env=QUOKKA_PROFILE ./auto/config
+          echo "--- 生成された config/bootstrap の中身 ---"
+          cat config/bootstrap 2>/dev/null || echo "(config/bootstrap が見当たりません)"
+
       - name: lb clean
         working-directory: live-build
         run: sudo lb clean
