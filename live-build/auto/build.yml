@@ -1,0 +1,156 @@
+name: Build Quokka OS ISO
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - "live-build/**"
+      - ".github/workflows/build.yml"
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Build profile
+        required: true
+        default: standard
+        type: choice
+        options:
+          - standard
+          - full
+
+permissions:
+  contents: read
+
+env:
+  QUOKKA_PROFILE: ${{ github.event.inputs.profile || 'standard' }}
+  # secretsコンテキストはif:条件式では直接参照できない(GitHub公式ドキュメントで明記された制約)。
+  # そのため一度job-levelのenvに真偽値として写し、if:はそちらを見る。
+  HAS_GPG_PRIVATE_KEY: ${{ secrets.QUOKKA_GPG_PRIVATE_KEY != '' }}
+  HAS_GPG_KEY_ID: ${{ secrets.QUOKKA_GPG_KEY_ID != '' }}
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Free up disk space (live-build needs a lot)
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
+          df -h
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            live-build \
+            debootstrap \
+            squashfs-tools \
+            xorriso \
+            isolinux \
+            syslinux-common \
+            grub-pc-bin \
+            grub-efi-amd64-bin \
+            grub-efi-amd64-signed \
+            shim-signed \
+            mtools \
+            dosfstools \
+            wget \
+            ca-certificates \
+            gnupg
+
+      - name: Fetch Kali archive key (if not already committed)
+        run: |
+          mkdir -p live-build/config/archives
+          if [ ! -s live-build/config/archives/kali.key.chroot ]; then
+            wget https://archive.kali.org/archive-key.asc \
+              -O live-build/config/archives/kali.key.chroot
+          fi
+
+      - name: Show selected profile
+        run: echo "QUOKKA_PROFILE=${QUOKKA_PROFILE}"
+
+      - name: Generate live-build config (auto/config)
+        # 正直な経緯: live-build/config/ が既にリポジトリにコミットされているため、
+        # lb build はそれを「設定済み」とみなし auto/config を一度も実行しない。
+        # そのため auto/config 内の --distribution bookworm 等が反映されず、
+        # live-build側の古いデフォルト(Ubuntu precise)にフォールバックしていた。
+        # ここで明示的に auto/config を実行し、config/ を必ず再生成する。
+        working-directory: live-build
+        run: |
+          sudo --preserve-env=QUOKKA_PROFILE sh ./auto/config
+          echo "--- 生成された config/bootstrap の中身 ---"
+          cat config/bootstrap 2>/dev/null || echo "(config/bootstrap が見当たりません)"
+
+      - name: lb clean
+        working-directory: live-build
+        run: sudo lb clean
+
+      - name: lb build
+        working-directory: live-build
+        run: sudo --preserve-env=QUOKKA_PROFILE lb build 2>&1 | tee build.log
+
+      - name: Show build output
+        if: always()
+        working-directory: live-build
+        run: ls -lah
+
+      - name: Generate checksum
+        if: success()
+        working-directory: live-build
+        run: |
+          for f in live-image-*.iso *.hybrid.iso; do
+            [ -f "$f" ] || continue
+            sha256sum "$f" | tee "$f.sha256"
+          done
+
+      - name: Import GPG key
+        if: success() && env.HAS_GPG_PRIVATE_KEY == 'true'
+        env:
+          QUOKKA_GPG_PRIVATE_KEY: ${{ secrets.QUOKKA_GPG_PRIVATE_KEY }}
+        run: |
+          echo "$QUOKKA_GPG_PRIVATE_KEY" | base64 -d > /tmp/quokka-private.key
+          gpg --batch --import /tmp/quokka-private.key
+          rm -f /tmp/quokka-private.key
+
+      - name: Sign checksums (skip automatically when secrets are absent)
+        if: success() && env.HAS_GPG_PRIVATE_KEY == 'true' && env.HAS_GPG_KEY_ID == 'true'
+        working-directory: live-build
+        env:
+          QUOKKA_GPG_KEY_ID: ${{ secrets.QUOKKA_GPG_KEY_ID }}
+          QUOKKA_GPG_PASSPHRASE: ${{ secrets.QUOKKA_GPG_PASSPHRASE }}
+        run: |
+          shopt -s nullglob
+          for checksum in *.sha256; do
+            if [ -n "${QUOKKA_GPG_PASSPHRASE:-}" ]; then
+              gpg --batch --yes --pinentry-mode loopback --passphrase "$QUOKKA_GPG_PASSPHRASE" \
+                --local-user "$QUOKKA_GPG_KEY_ID" --armor --detach-sign "$checksum"
+            else
+              gpg --batch --yes --local-user "$QUOKKA_GPG_KEY_ID" --armor --detach-sign "$checksum"
+            fi
+          done
+
+      - name: Upload ISO
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quokka-os-${{ env.QUOKKA_PROFILE }}-iso
+          path: |
+            live-build/*.iso
+            live-build/*.sha256
+            live-build/*.sha256.asc
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload build log (always, for debugging failures)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quokka-os-${{ env.QUOKKA_PROFILE }}-build-log
+          path: live-build/build.log
+          if-no-files-found: ignore
+          retention-days: 14
